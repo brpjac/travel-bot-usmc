@@ -1,0 +1,16 @@
+# Secrets
+.streamlit/secrets.toml
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs (runtime-generated)
+logs/
+
+# Vector store (large binary files — rebuild with ingest.py)
+# Uncomment next line if you want to exclude from git:
+# vectorstore/

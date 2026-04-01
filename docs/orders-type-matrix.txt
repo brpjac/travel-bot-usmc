@@ -1,0 +1,145 @@
+MIU Orders-Type Matrix
+Updated: 6-Mar-2026, Maj Vigneault
+Distribution: DoW Community Only
+
+===================================================================
+HOW TO DETERMINE YOUR ORDERS TYPE AND SUBMISSION REQUIREMENTS
+===================================================================
+
+This matrix tells you what type of orders to request and what you need to submit based on your service type, destination, and trip purpose.
+
+---
+
+SERVICE TYPE: SMCR (Selected Marine Corps Reserve)
+
+  DESTINATION: Home Training Center (HTC)
+    ORDERS TYPE: IDT (Inactive Duty Training)
+    REQUIREMENTS:
+      - Submit $750 travel voucher NLT 15 days prior to trip in DTS-R
+      - Fill out Billeting Request Form with S-4 if lodging is required
+      - Notify MIU_Operations@usmc.mil NLT 1 week prior to travel
+
+  DESTINATION: More than 50 miles from HTC, CONUS (Continental United States)
+
+    ORDERS TYPE: Offsite IDT
+    REQUIREMENTS:
+      - Submit Orders Request Form in Correspondence Tracker (45 days prior to travel)
+      - Must be current on: Medical, GTCC, Primary Residence
+
+    ORDERS TYPE: AT (Annual Training) — use for trips longer than 7 days
+    REQUIREMENTS:
+      - Submit Orders Request Form in Correspondence Tracker (45 days prior to travel)
+      - Must be current on: Medical, GTCC, Primary Residence
+
+    ORDERS TYPE: ADOS (Active Duty Operational Support) — use for trips shorter than 7 days
+    REQUIREMENTS:
+      - Submit Orders Request Form in Correspondence Tracker (NLT 2 weeks prior to travel)
+      - Must be current on: Medical, GTCC, Primary Residence
+
+  DESTINATION: OCONUS (Outside Continental United States)
+
+    ORDERS TYPE: Offsite IDT
+    REQUIREMENTS:
+      - Submit Orders Request Form in Correspondence Tracker (60 days prior to travel)
+      - Must be current on: Medical, GTCC, Primary Residence, APACS
+
+    ORDERS TYPE: AT (Annual Training) — use for trips longer than 7 days
+    REQUIREMENTS:
+      - Submit Orders Request Form in Correspondence Tracker (60 days prior to travel)
+      - Must be current on: Medical, GTCC, Primary Residence, APACS
+
+    ORDERS TYPE: ADOS (Active Duty Operational Support) — use for trips shorter than 7 days
+    REQUIREMENTS:
+      - Submit Orders Request Form in Correspondence Tracker (NLT 3 weeks prior to travel)
+      - Must be current on: Medical, GTCC, Primary Residence, APACS
+
+---
+
+SERVICE TYPE: Active Reserve
+  DESTINATION: HTC or Anywhere
+    ORDERS: Created and managed through DTS (Defense Travel System)
+    NOTE: DTS is the travel management system, not an orders type. Active Reserve Marines use standard DTS process for all travel.
+
+---
+
+SERVICE TYPE: Active Duty
+  DESTINATION: HTC or Anywhere
+    ORDERS: Created and managed through DTS (Defense Travel System)
+    NOTE: DTS is the travel management system, not an orders type. Active Duty Marines use standard DTS process for all travel.
+
+===================================================================
+ENTITLEMENTS BY ORDERS TYPE
+===================================================================
+
+IDT (Inactive Duty Training):
+  - NO per diem, NO rental car, NO commercial travel reimbursement
+  - Lodging: Only available at HTC (on-base billeting if available)
+  - Mileage: $750 travel voucher via DTS-R
+  - Exception: CO/Authorizing Official can authorize lodging with a written travel order
+    if overnight stay is mission-required and duty period exceeds 12 hours
+
+Offsite IDT:
+  - Per diem: YES (meals and incidentals)
+  - Lodging: YES (if authorized on orders)
+  - Rental car: May be authorized if mission-required and approved by AO
+  - Mileage: YES (POV reimbursement at standard rate)
+
+AT (Annual Training):
+  - Per diem: YES
+  - Lodging: YES
+  - Rental car: May be authorized if advantageous to the Government
+  - Commercial travel: YES (air/rail if distance warrants)
+  - Full TDY entitlements apply
+
+ADOS (Active Duty Operational Support):
+  - Per diem: YES
+  - Lodging: YES
+  - Rental car: YES (if authorized — most common orders type for rental car entitlement)
+  - Commercial travel: YES
+  - Full TDY entitlements apply
+  - Note: ADOS is often the best option when a Marine needs travel entitlements
+    (lodging, rental car, per diem) for a short-duration trip
+
+===================================================================
+ITEMS OF NOTE
+===================================================================
+
+1. IDT Lodging: Conduct drills (IDTs) for pay on Federal Installations. IDT lodging is only available at HTC, unless submitting for Offsite IDT orders.
+
+2. Courtesy Drills: Work with DET leadership to submit in RTAMMS. Courtesy unit musters.
+
+3. Appropriate Duty: NAVMC 799 submitted to DET leadership via MIU Drill Submission Page and uploaded into Drill Manager.
+
+4. Under 50 miles from HTC: Default orders type is IDT (no travel entitlements). If the Marine needs lodging, rental car, or per diem, options are: (a) request CO exception/waiver on IDT for lodging if mission-required, or (b) request ADOS orders which provide full TDY entitlements including rental car.
+
+===================================================================
+KEY DEFINITIONS
+===================================================================
+
+- HTC: Home Training Center — the location where a Marine is assigned to drill
+- CONUS: Continental United States (the 48 contiguous states plus DC)
+- OCONUS: Outside Continental United States (Alaska, Hawaii, territories, overseas)
+- IDT: Inactive Duty Training — standard drill periods
+- AT: Annual Training — typically 12-17 day training periods
+- ADOS: Active Duty Operational Support — short-term active duty support
+- SMCR: Selected Marine Corps Reserve
+- DTS: Defense Travel System
+- DTS-R: Defense Travel System for Reserves
+- GTCC: Government Travel Charge Card
+- APACS: Aircraft and Personnel Automated Clearance System (required for OCONUS travel)
+- RTAMMS: Reserve Training and Administration Management System
+- NLT: No Later Than
+
+===================================================================
+QUICK REFERENCE: SUBMISSION TIMELINES
+===================================================================
+
+| Destination     | Orders Type | Submit By              |
+|-----------------|-------------|------------------------|
+| HTC (SMCR)      | IDT         | 15 days prior (DTS-R)  |
+| >50mi CONUS     | Offsite IDT | 45 days prior          |
+| >50mi CONUS     | AT          | 45 days prior          |
+| >50mi CONUS     | ADOS        | 2 weeks prior          |
+| OCONUS          | Offsite IDT | 60 days prior          |
+| OCONUS          | AT          | 60 days prior          |
+| OCONUS          | ADOS        | 3 weeks prior          |
