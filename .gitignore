@@ -11,6 +11,9 @@ venv/
 # Logs (runtime-generated)
 logs/
 
+# macOS metadata
+.DS_Store
+
 # Vector store (large binary files — rebuild with ingest.py)
 # Uncomment next line if you want to exclude from git:
 # vectorstore/
