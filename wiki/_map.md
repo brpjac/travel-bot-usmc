@@ -5,7 +5,7 @@ Auto-generated page inventory. Do not edit by hand; run
 Descriptions come from each page's `description:` frontmatter and double
 as the bot router's page catalog.
 
-Generated: 2026-07-18 | Pages: 47
+Generated: 2026-07-19 | Pages: 47
 
 | Page | Type | Access | Reviewed | Description |
 |------|------|--------|----------|-------------|
@@ -13,7 +13,7 @@ Generated: 2026-07-18 | Pages: 47
 | [_claims.md](_claims.md) | registry | public_release |  | Human-readable claims view synchronized with _claims.yml |
 | [_health.md](_health.md) | health | public_release |  | Auto-generated wiki health report from /lint |
 | [_schema.md](_schema.md) | schema | public_release | 2026-07-17 | Rules for pages, frontmatter, citations, claims, and sources in the MIU travel wiki |
-| [entitlements/CLAUDE.md](entitlements/CLAUDE.md) | index | public_release | 2026-07-17 | What each orders type rates: per diem, lodging, POV mileage, rental car, the $750 IDT voucher and $500 IDT lodging rule |
+| [entitlements/CLAUDE.md](entitlements/CLAUDE.md) | index | public_release | 2026-07-17 | What each orders type rates: per diem, lodging, POV mileage, rental car, and the $750 IDT travel reimbursement rules |
 | [entitlements/entitlements-matrix.md](entitlements/entitlements-matrix.md) | topic | public_release | 2026-07-17 | One table: per diem, lodging, rental car, POV mileage, and commercial travel for IDT, Offsite IDT, AT, and ADOS |
 | [entitlements/idt-travel-reimbursement.md](entitlements/idt-travel-reimbursement.md) | topic | public_release | 2026-07-18 | The $750/round-trip IDT-R program (MARADMIN 157/25): eligibility, 11-trip FY limit, DTS claim process, and the MIU 15-day voucher submission rule |
 | [entitlements/lodging.md](entitlements/lodging.md) | topic | public_release | 2026-07-17 | Lodging by orders type, on-base billeting at the HTC, and the CO exception for mission-required IDT overnights over 12 hours |
@@ -53,6 +53,6 @@ Generated: 2026-07-18 | Pages: 47
 | [sources/foro-3000-52-1/ch5-t3-logistics.md](sources/foro-3000-52-1/ch5-t3-logistics.md) | source_extract | public_release | 2026-07-17 | Verbatim: TOT deadlines (60/30/7 days), TOP process, the D-65→D-5 submission ladder, 15-day waiver rule, adjudication process, strategic mobility, EXSPT, PEM |
 | [sources/foro-3000-52-1/ch6-t3-database.md](sources/foro-3000-52-1/ch6-t3-database.md) | source_extract | public_release | 2026-07-17 | Verbatim: T3 database access (CAC, URL, permission types), event levels and who creates them, SIC codes, manning, expense categories |
 | [sources/foro-3000-52-1/ch7-mrows-dts.md](sources/foro-3000-52-1/ch7-mrows-dts.md) | source_extract | public_release | 2026-07-17 | Verbatim: writing TEEP-funded orders in MROWS/DTS, TEEP event numbers and SICs, the PID table, and the 5-working-day voucher liquidation rule |
-| [sources/jtr/par-020210-pov-use.md](sources/jtr/par-020210-pov-use.md) | source_extract | public_release | 2026-07-17 | Verbatim: Table 2-10 (400-mile one-way / 800-mile round-trip POV advantage rule), constructed-cost limits, and cost-comparison rules |
-| [sources/jtr/par-032303-032304-idt-travel.md](sources/jtr/par-032303-032304-idt-travel.md) | source_extract | public_release | 2026-07-17 | Verbatim: Table 3-8 (IDT normally gets no travel allowances) and the IDT-outside-commuting-distance rule ($500/round trip, 150-mile definition, eligibility criteria) |
+| [sources/jtr/par-020210-pov-use.md](sources/jtr/par-020210-pov-use.md) | source_extract | public_release | 2026-07-19 | Verbatim: Table 2-10 (400-mile one-way / 800-mile round-trip POV advantage rule), constructed-cost limits, and cost-comparison rules |
+| [sources/jtr/par-032303-032304-idt-travel.md](sources/jtr/par-032303-032304-idt-travel.md) | source_extract | public_release | 2026-07-19 | Verbatim: Table 3-8 (IDT normally gets no travel allowances) and the IDT-outside-commuting-distance rule ($750/round trip, 150-mile definition, eligibility criteria) |
 | [sources/maradmin-157-25/message.md](sources/maradmin-157-25/message.md) | source_extract | public_release | 2026-07-18 | Verbatim: the message raising the IDT travel reimbursement cap from $500 to $750 per round trip (effective 27 Dec 2024), with eligibility, 11-trip limit, and DTS claim procedures |

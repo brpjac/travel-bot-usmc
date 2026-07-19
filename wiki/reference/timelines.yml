@@ -1,0 +1,136 @@
+# Machine-readable deadline rules for the trip planner (planner.py) and any
+# file-reading agent. Every rule cites a claim in _claims.yml; lint checks that
+# each claim_id exists, is active, and that the offset number appears in the
+# claim text. Human projections: ../process/t3-timelines.md and
+# ../process/orders-request-miu.md.
+#
+# Fields:
+#   anchor: departure | return    (return falls back to departure, with a note)
+#   offset_days: negative = before anchor, positive = after
+#   business_days: true -> offset counted Mon-Fri (no federal holidays)
+#   applies: ALL listed conditions must match; omitted key = applies to all
+#     scope: [conus, oconus]      party: [individual, group, charter]
+#     orders_type: [offsite_idt, at, ados]      commercial_air: true|false
+#   category: orders | t3 | ticketing | post_trip   (display grouping)
+#
+# Out of scope for v1 (deliberate): TOT/cargo deadlines (C035 — passenger
+# planner only), HTC drill mechanics (C002/C016 — no departure ladder), SAAM
+# movements. Charter deadlines apply regardless of destination — the ForO has
+# no CONUS/OCONUS split for charters; this file mirrors the source.
+version: 1
+
+rules:
+  # --- MIU orders request lead times ---
+  - id: TL-ORDERS-CONUS-45
+    label: "Orders Request Form in Correspondence Tracker"
+    claim_id: C004
+    anchor: departure
+    offset_days: -45
+    applies: {scope: [conus], orders_type: [offsite_idt, at]}
+    category: orders
+  - id: TL-ORDERS-CONUS-ADOS
+    label: "Orders Request Form in Correspondence Tracker (ADOS)"
+    claim_id: C005
+    anchor: departure
+    offset_days: -14
+    applies: {scope: [conus], orders_type: [ados]}
+    category: orders
+  - id: TL-ORDERS-OCONUS-60
+    label: "Orders Request Form (OCONUS — APACS also required)"
+    claim_id: C006
+    anchor: departure
+    offset_days: -60
+    applies: {scope: [oconus], orders_type: [offsite_idt, at]}
+    category: orders
+  - id: TL-ORDERS-OCONUS-ADOS
+    label: "Orders Request Form (OCONUS ADOS)"
+    claim_id: C007
+    anchor: departure
+    offset_days: -21
+    applies: {scope: [oconus], orders_type: [ados]}
+    category: orders
+
+  # --- T3 / TOP submission ladder (non-SAAM commercial movement) ---
+  - id: TL-T3-CHARTER
+    label: "Group charter T3 request received by final approver"
+    claim_id: C020
+    anchor: departure
+    offset_days: -65
+    applies: {party: [charter], commercial_air: true}
+    category: t3
+  - id: TL-TOP-CHARTER
+    label: "Group charter TOP request received by DMO"
+    claim_id: C021
+    anchor: departure
+    offset_days: -60
+    applies: {party: [charter], commercial_air: true}
+    category: t3
+  - id: TL-T3-OCONUS
+    label: "OCONUS commercial air T3 request received by final approver"
+    claim_id: C022
+    anchor: departure
+    offset_days: -50
+    applies: {scope: [oconus], party: [individual, group], commercial_air: true}
+    category: t3
+  - id: TL-TOP-OCONUS
+    label: "OCONUS TOP request received by DMO with approved/authenticated orders"
+    claim_id: C023
+    anchor: departure
+    offset_days: -45
+    applies: {scope: [oconus], party: [individual, group], commercial_air: true}
+    category: t3
+  - id: TL-T3-CONUS
+    label: "CONUS commercial air/bus TOP request received by T3 Manager"
+    claim_id: C024
+    anchor: departure
+    offset_days: -35
+    applies: {scope: [conus], party: [individual, group], commercial_air: true}
+    category: t3
+  - id: TL-TOP-CONUS
+    label: "CONUS TOP request received by DMO with authenticated orders"
+    claim_id: C025
+    anchor: departure
+    offset_days: -30
+    applies: {scope: [conus], party: [individual, group], commercial_air: true}
+    category: t3
+
+  # --- Ticketing tripwires ---
+  - id: TL-ORDERS-APPROVED
+    label: "Orders APPROVED (hard tripwire — reservations cancelled after this)"
+    claim_id: C034
+    anchor: departure
+    offset_days: -15
+    applies: {commercial_air: true}
+    category: ticketing
+  - id: TL-GTCC
+    label: "GTCC IBA active; authenticated orders attached to TOP (or DMO cancels)"
+    claim_id: C026
+    anchor: departure
+    offset_days: -10
+    applies: {commercial_air: true}
+    category: ticketing
+  - id: TL-TICKETED
+    label: "DMO ticketing complete"
+    claim_id: C027
+    anchor: departure
+    offset_days: -5
+    applies: {commercial_air: true}
+    category: ticketing
+
+  # --- After the trip ---
+  - id: TL-VOUCHER
+    label: "Travel voucher (DTS or DD 1351-2) submitted"
+    claim_id: C037
+    anchor: return
+    offset_days: 5
+    business_days: true
+    category: post_trip
+
+# Escalation guidance rendered when a t3/ticketing deadline is already past.
+# The planner reads thresholds here; message text lives in planner.py.
+escalation:
+  g35_when_days_to_departure_gt: 15
+  g35_claim_id: C028
+  cos_when_days_to_departure_lte: 15
+  cos_claim_id: C028
+  cancel_claim_id: C034

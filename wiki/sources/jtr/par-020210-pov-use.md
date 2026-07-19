@@ -4,20 +4,20 @@ description: "Verbatim: Table 2-10 (400-mile one-way / 800-mile round-trip POV a
 type: source_extract
 access: public_release
 status: active
-last_reviewed: 2026-07-17
+last_reviewed: 2026-07-19
 verbatim: true
 raw_file: "../raw/Joint Travel Regulations.pdf"
-pages_transcribed: "2-19 through 2-21 (PDF pages 49-51, JTR ed. 12/01/2021)"
+pages_transcribed: "2-22 through 2-24 (JTR ed. 07/01/2026; Table 2-10 re-verified unchanged on refresh — originally transcribed from ed. 12/01/2021 at pp. 2-19 to 2-21)"
 source_ids: [SRC-JTR]
 related:
   - ../../entitlements/pov-mileage.md
   - ../../reference/distance-thresholds.md
 ---
 
-# JTR par. 020210 (ed. 12/01/2021) — verbatim
+# JTR par. 020210 (ed. 07/01/2026) — verbatim
 
-> Our JTR copy is December 2021; the JTR updates monthly. Verify against the
-> current edition before relying on exact numbers.
+> Table 2-10 (the 400/800-mile rule) re-verified word-for-word in the July
+> 2026 edition. The JTR updates monthly — re-check page numbers on refresh.
 
 ## 020210. Privately Owned Vehicles (POV) (p. 2-19)
 

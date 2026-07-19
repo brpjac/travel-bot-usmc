@@ -95,7 +95,7 @@ Every factual statement carries a citation:
 - Regulation text: trailing parenthetical using the source's `short_cite` from
   `_sources.yml`:
   - `(JTR, par. 032304, p. 3B-12)` — JTR uses 6-digit paragraph numbers
-  - `(MCO 1001R.1K, Ch 3, para 4)`
+  - `(MCO 1001R.1L, Ch 3, para 4)`
   - `(ForO 3000-52.1, Ch 5, p. 18)` — chapter + scanned-page number
   - `(MIU Orders-Type Matrix, 6 Mar 2026)` — no internal sections; date-cited
 

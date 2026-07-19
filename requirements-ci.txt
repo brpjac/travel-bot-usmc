@@ -1,0 +1,7 @@
+# Light dependency set for CI (no torch/sentence-transformers): enough to
+# import bot/planner/app (FAISS imports are lazy) and run planner tests + evals.
+google-genai~=2.12
+pydantic~=2.13
+pyyaml~=6.0
+streamlit~=1.59
+pytest~=8.0

@@ -24,6 +24,12 @@ wiki/internal/
 # Bundle output
 dist/
 
+# Obsidian editor config (per-user; workspace.json churns every session)
+wiki/.obsidian/
+
+# Eval run reports (nondeterministic; the question set IS committed)
+evals/results-*.md
+
 # Vector store (large binary files — rebuild with ingest.py)
 # Uncomment next line if you want to exclude from git:
 # vectorstore/

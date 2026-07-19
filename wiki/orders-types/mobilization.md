@@ -14,9 +14,9 @@ related:
 
 # Mobilization / Activation
 
-**Status: draft.** Our loaded sources (MCO 1001R.1K of 2009 and ForO 3000-52.1
-of 2019) cover this only at the margins. Treat this page as orientation, not
-guidance — talk to your S-1 for anything real.
+**Status: draft.** Our loaded sources (MCO 1001R.1L MCRAMM and ForO 3000-52.1)
+cover this only at the margins. Treat this page as orientation, not guidance —
+talk to your S-1 for anything real.
 
 ## What the loaded sources do say
 
@@ -34,6 +34,5 @@ See [../process/t3-overview.md](../process/t3-overview.md) and
 
 ## What this page needs (via /ingest)
 
-- A current mobilization order-writing reference (MCRAMM successor / current
-  MARADMIN guidance)
+- A pass over MCO 1001R.1L's mobilization chapters to anchor real claims here
 - Entitlements specific to mobilization orders vs. AT/ADOS

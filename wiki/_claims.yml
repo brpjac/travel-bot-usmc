@@ -151,10 +151,9 @@ claims:
   - id: C018
     category: Distance Thresholds
     claim: "POV use is automatically considered advantageous to the Government for official distances of 400 miles or less one way / 800 miles or less round trip (no cost comparison); greater distances require case-by-case AO approval, and using a POV instead of the authorized mode limits reimbursement to the constructed cost"
-    source: "JTR, par. 020210, Table 2-10, p. 2-20 (ed. 12/01/2021)"
+    source: "JTR, par. 020210, Table 2-10, p. 2-23 (ed. 07/01/2026; re-verified unchanged from ed. 12/01/2021)"
     source_ids: [SRC-JTR]
     status: active
-    review_triggers: [stale_source]
     topic: entitlements/pov-mileage.md
 
   # --- ForO 3000-52.1 T3/TEEP (verified against scan during 2026-07-17 transcription pass) ---
@@ -340,9 +339,9 @@ claims:
   # --- MARADMIN 157/25 — IDT Travel Reimbursement (ingested 2026-07-18) ---
   - id: C041
     category: Entitlements
-    claim: "IDT Travel Reimbursement is limited to $750 per round trip for round trips with an end date on or after 27 December 2024 ($500 for round trips ending before that date), per the current JTR"
-    source: "MARADMIN 157/25, paras 1 and 5"
-    source_ids: [SRC-MARADMIN-157-25]
+    claim: "IDT Travel Reimbursement is limited to $750 per round trip for round trips with an end date on or after 27 December 2024 ($500 for round trips ending before that date)"
+    source: "JTR, par. 032304.B.1, p. 3B-7 (ed. 07/01/2026); MARADMIN 157/25, paras 1 and 5"
+    source_ids: [SRC-JTR, SRC-MARADMIN-157-25]
     status: active
     topic: entitlements/idt-travel-reimbursement.md
 

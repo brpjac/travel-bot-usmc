@@ -17,20 +17,22 @@ related:
 What feeds this wiki, and when to go deeper. Machine-readable registry:
 [../_sources.yml](../_sources.yml).
 
-## Joint Travel Regulations (JTR) — Dec 2021 copy
+## Joint Travel Regulations (JTR) — Jul 2026 copy
 
 The DoD-wide travel entitlements regulation (per diem, transportation, POV,
-lodging). ~1,000+ pages; only the reserve-relevant paragraphs are transcribed
+lodging). 572 pages; only the reserve-relevant paragraphs are transcribed
 in [../sources/jtr/](../sources/CLAUDE.md). The bot can also search the full
-raw text. Updates monthly — our copy is stale for exact rates
-([precedence-and-currency.md](precedence-and-currency.md)).
+raw text. Updates monthly — refreshed 19 Jul 2026; page-number citations are
+edition-specific ([precedence-and-currency.md](precedence-and-currency.md)).
 
-## MCO 1001R.1K (MCRAMM) — 2009
+## MCO 1001R.1L (MCRAMM) — Dec 2015 w/ Admin CH-2
 
 The Marine Corps Reserve Administrative Management Manual: reserve
-participation, duty types, administrative machinery. Old (the ForO references
-the newer 1001R.1L). Used here mainly for definitions; treat operational
-details with suspicion.
+participation, duty types, administrative machinery. This is the revision
+ForO 3000-52.1 references; it replaced our 2009 .1K copy on 19 Jul 2026
+(searchable via the bot's deep-search fallback). No chapters transcribed yet —
+[../orders-types/mobilization.md](../orders-types/mobilization.md) is the
+first candidate.
 
 ## ForO 3000-52.1 — MARFORRES TEEP/T3 SOP, Apr 2019
 

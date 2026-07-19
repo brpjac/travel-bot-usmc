@@ -96,6 +96,6 @@ related:
 | M&IE | Meals and Incidental Expenses |
 | POV | Privately Owned Vehicle |
 | JTR | Joint Travel Regulations |
-| MCRAMM | Marine Corps Reserve Administrative Management Manual (MCO 1001R.1K) |
+| MCRAMM | Marine Corps Reserve Administrative Management Manual (MCO 1001R.1L) |
 | ForO | Force Order |
 | MARADMIN | Marine Corps Administrative Message |

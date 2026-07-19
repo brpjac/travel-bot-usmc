@@ -79,9 +79,10 @@ your unit verifies before you claim [C045].
 
 ## Registry history
 
-The JTR (Dec 2021 copy) shows the old **$500** cap — retained as retired
-claim [C017] (superseded by [C041]) with the verbatim text in
+The current JTR states the $750 limit directly (JTR, par. 032304.B.1,
+p. 3B-7, ed. 07/01/2026) — verbatim text:
 [../sources/jtr/par-032303-032304-idt-travel.md](../sources/jtr/par-032303-032304-idt-travel.md).
-MARADMIN 157/25 implements the current JTR's $750 figure; this is a live
-example of a newer source superseding our stale JTR copy
+The old $500 cap (JTR ed. 12/01/2021) is retained as retired claim [C017],
+superseded by [C041] when MARADMIN 157/25 implemented the increase — the
+wiki's worked example of supersession
 ([../reference/precedence-and-currency.md](../reference/precedence-and-currency.md)).

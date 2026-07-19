@@ -30,18 +30,18 @@ Status legend: **active** = verified against the cited source · **needs_review*
 | C015 | Under 50 mi needing entitlements: CO exception for IDT lodging, or ADOS orders | active | orders-types/choosing-orders-type.md |
 | C016 | HTC IDT: notify MIU_Operations@usmc.mil NLT 1 week prior; Billeting Request Form via S-4 | active | process/orders-request-miu.md |
 
-## JTR Numbers (verified against JTR ed. 12/01/2021 — stale-source caveat applies)
+## JTR Numbers (re-verified against JTR ed. 07/01/2026 on 19 Jul 2026)
 
 | ID | Claim | Status | Topic |
 |----|-------|--------|-------|
-| C017 | IDT 150+ mi (DTOD): actual expenses up to $500/round trip (par. 032304, pp. 3B-6/7) — **superseded by C041** ($750 for round trips ending on/after 27 Dec 2024) | retired | entitlements/idt-travel-reimbursement.md |
-| C018 | POV auto-advantageous ≤400 mi one-way / ≤800 mi RT; beyond is AO case-by-case; POV-instead-of-authorized-mode limited to constructed cost (par. 020210, Table 2-10, p. 2-20) | active | entitlements/pov-mileage.md |
+| C017 | IDT 150+ mi (DTOD): actual expenses up to $500/round trip (ed. 12/01/2021) — **superseded by C041** ($750 for round trips ending on/after 27 Dec 2024) | retired | entitlements/idt-travel-reimbursement.md |
+| C018 | POV auto-advantageous ≤400 mi one-way / ≤800 mi RT; beyond is AO case-by-case; POV-instead-of-authorized-mode limited to constructed cost (par. 020210, Table 2-10, p. 2-23, ed. 07/01/2026) | active | entitlements/pov-mileage.md |
 
 ## IDT Travel Reimbursement (source: MARADMIN 157/25, 24 Mar 2025)
 
 | ID | Claim | Status | Topic |
 |----|-------|--------|-------|
-| C041 | IDT-R cap is $750/round trip for round trips ending on/after 27 Dec 2024 ($500 before), per current JTR (paras 1, 5) | active | entitlements/idt-travel-reimbursement.md |
+| C041 | IDT-R cap is $750/round trip for round trips ending on/after 27 Dec 2024 ($500 before) — JTR par. 032304.B.1 p. 3B-7 (ed. 07/01/2026) + MARADMIN 157/25 | active | entitlements/idt-travel-reimbursement.md |
 | C042 | Eligibility: critical staffing shortfalls / command-screened / GO / IMA RSLB billets; unit 150+ mi from MCTFS primary residence (DTOD); BIC match or RA exception; no rank/MOS limits (para 3) | active | entitlements/idt-travel-reimbursement.md |
 | C043 | Limit 11 round trips per Marine per FY; 22 for MOS 75XX DIFOP aviators (para 5.b) | active | entitlements/idt-travel-reimbursement.md |
 | C044 | IDT-R is separate from and may NOT be combined with off-site IDT travel (para 6.g) | active | entitlements/idt-travel-reimbursement.md |

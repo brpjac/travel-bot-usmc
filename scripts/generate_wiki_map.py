@@ -40,6 +40,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=os.path.join(REPO, "wiki"),
                         help="Wiki root directory (default: <repo>/wiki)")
+    parser.add_argument("--check", action="store_true",
+                        help="verify _map.md is current (ignoring the Generated: date line); write nothing")
     args = parser.parse_args()
     wiki = os.path.abspath(args.root)
     map_path = os.path.join(wiki, "_map.md")
@@ -85,7 +87,28 @@ def main():
     ]
     for rel, ptype, access, reviewed, desc in rows:
         lines.append("| [%s](%s) | %s | %s | %s | %s |" % (rel, rel, ptype, access, reviewed, desc))
-    open(map_path, "w", encoding="utf-8").write("\n".join(lines) + "\n")
+    content = "\n".join(lines) + "\n"
+
+    if args.check:
+        def strip_date(text):
+            return [l for l in text.splitlines() if not l.startswith("Generated:")]
+        try:
+            existing = open(map_path, encoding="utf-8").read()
+        except OSError:
+            print("_map.md missing — run generate_wiki_map.py")
+            return 1
+        rc = 0
+        if strip_date(existing) != strip_date(content):
+            print("_map.md is stale — run python3 scripts/generate_wiki_map.py")
+            rc = 1
+        if missing_desc:
+            print("pages missing description frontmatter:", ", ".join(missing_desc))
+            rc = 1
+        if rc == 0:
+            print("_map.md is current (%d pages)" % len(rows))
+        return rc
+
+    open(map_path, "w", encoding="utf-8").write(content)
     print("wrote %s (%d pages)" % (os.path.relpath(map_path, REPO), len(rows)))
     if missing_desc:
         print("pages missing description frontmatter:", ", ".join(missing_desc))

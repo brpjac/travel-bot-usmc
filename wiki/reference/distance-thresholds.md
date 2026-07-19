@@ -21,9 +21,9 @@ DTOD distances, not odometer readings.
 | Threshold | What changes | Source |
 |---|---|---|
 | **50 miles** from HTC | Above it: Offsite IDT / AT / ADOS territory. Below it: standard IDT, no travel entitlements [C003] | (MIU Orders-Type Matrix, 6 Mar 2026) |
-| **75 miles** from residence | One factor in the case-by-case higher-than-$500 IDT reimbursement exception | (JTR, par. 032304.B.2, p. 3B-7) |
-| **150 miles** one way | Minimum unit-to-residence distance for IDT Travel Reimbursement — up to $750/round trip [C041], billet + BIC eligibility gates apply [C042] | (MARADMIN 157/25, paras 3, 5; JTR par. 032304) |
-| **400 miles** one way / **800 miles** round trip | At or under: POV automatically advantageous, mileage paid, no comparison. Over: AO case-by-case, constructed-travel comparison [C018] | (JTR, par. 020210, Table 2-10, p. 2-20) |
+| **75 miles** from residence | One factor in the case-by-case higher-than-cap IDT reimbursement exception | (JTR, par. 032304.B.2, p. 3B-8) |
+| **150 miles** one way | Minimum unit-to-residence distance for IDT Travel Reimbursement — up to $750/round trip [C041], billet + BIC eligibility gates apply [C042] | (JTR, par. 032304, pp. 3B-7 to 3B-8; MARADMIN 157/25, paras 3, 5) |
+| **400 miles** one way / **800 miles** round trip | At or under: POV automatically advantageous, mileage paid, no comparison. Over: AO case-by-case, constructed-travel comparison [C018] | (JTR, par. 020210, Table 2-10, p. 2-23) |
 
 ## How they interact — worked examples
 

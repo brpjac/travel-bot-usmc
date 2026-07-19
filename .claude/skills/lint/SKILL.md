@@ -1,58 +1,41 @@
 ---
 name: lint
-description: Run wiki health checks - claims sync, source parity, orphans, link integrity, distribution guard - and write the report to wiki/_health.md. Use when the user says /lint or after significant wiki changes.
+description: Run wiki health checks - mechanical checks via scripts/lint_wiki.py plus a semantic discrepancy scan - and write the report to wiki/_health.md. Use when the user says /lint or after significant wiki changes.
 user_invocable: true
 ---
 
 # Wiki lint
 
-Run the checks below and write results to `wiki/_health.md` (overwrite) and
-regenerate `wiki/_map.md`. **Only those two files may be modified — never
-auto-fix findings**; report them.
+Two layers: the mechanical checks live in `scripts/lint_wiki.py` (single
+source of truth, also run by CI); this skill adds the judgment layer on top.
+**Never auto-fix findings** — report them. Only `wiki/_health.md` and
+`wiki/_map.md` may be modified (the script handles both), plus the `log.md`
+line.
 
-## Checks
+## Steps
 
-1. **Claims projection sync.** Every C### in `wiki/_claims.yml` appears in
-   `wiki/_claims.md` with matching claim text, status, and topic — and vice
-   versa. No duplicate or missing IDs; IDs strictly increasing.
+1. **Run the mechanical checks**: `python3 scripts/lint_wiki.py --write-health`
+   — distribution guard (fail-hard, reported first), claims yml/md sync,
+   source parity, orphan claims, frontmatter coverage (+6-month freshness),
+   link integrity + orphan pages, extract raw_file resolution, timelines.yml
+   claim cross-check, map currency. It writes `_health.md`, regenerates
+   `_map.md`, and appends the LINT line to `log.md`. Nonzero exit = FAILs.
 
-2. **Source parity (both directions).** Every file in `wiki/sources/raw/`
-   (and `raw/local/`) has a `_sources.yml` entry with matching `filename`;
-   every `_sources.yml` entry's file exists. Every `source_ids:` value in page
-   frontmatter and every `source_ids` in claims resolves to a registered
-   SRC-* id.
+2. **Semantic discrepancy scan** (not automatable): read the topic pages and
+   registries for the same fact stated two ways — a deadline or dollar amount
+   that differs between a page, its claim, an extract, or `timelines.yml`
+   labels. Also spot-check that `needs_review` claims are still hedged where
+   pages cite them. Append any findings to the `## Findings` section of
+   `wiki/_health.md` marked `SEMANTIC`.
 
-3. **Orphan claims.** Every claim's `topic:` page exists and lists the claim
-   in its `claim_ids:` frontmatter (or cites it inline). Flag claims no page
-   cites, and pages citing C### IDs that don't exist.
+3. **Report** the summary table to the user, FAILs first.
 
-4. **Discrepancies.** Numbers that appear in multiple places (pages, claims,
-   extracts) with different values — e.g. a deadline stated two ways.
+## Notes
 
-5. **Frontmatter coverage.** Every wiki .md page (except infra fallbacks) has
-   frontmatter with `title`, `description`, `type`, `access`, `status`,
-   `last_reviewed`. `source_extract` pages additionally have `verbatim`,
-   `raw_file`, `pages_transcribed`. Flag `last_reviewed` older than 6 months.
-
-6. **Link integrity + map.** Every relative markdown link resolves; every
-   non-index page has ≥1 inbound link (orphan pages). Then run
-   `python3 scripts/generate_wiki_map.py` — nonzero exit is a finding.
-
-7. **Extract integrity.** Every `source_extract` page's `raw_file:` path
-   resolves to a real file.
-
-8. **DISTRIBUTION GUARD (fail-hard).** Grep all git-tracked files
-   (`git ls-files` output) case-insensitively for distribution-marking
-   phrases using these bracket-escaped regexes (written this way so
-   pattern-definition files, including this one, never match themselves):
-   `[d]ow community only`, `[f]ouo`, `[c]ui//`. Run as
-   `git ls-files -z | xargs -0 grep -liE '[d]ow community only|[f]ouo|[c]ui//'`.
-   Also verify `git ls-files` returns nothing under
-   `wiki/sources/raw/local/` or `wiki/internal/`. Any hit is a FAIL, reported
-   first and loudly.
-
-## Report format (`wiki/_health.md`)
-
-Header with run date; one section per check with PASS/FAIL/WARN and specifics;
-a summary table at top. End by appending one `[YYYY-MM-DD] LINT: ...` line to
-`wiki/log.md`.
+- The distribution guard greps git-tracked files for marking phrases. When
+  writing patterns for it anywhere (docs, scripts), keep them self-non-matching:
+  bracket-escaped regex form (`[d]ow community only`, `[f]ouo`, `[c]ui//`) in
+  prose/skills, string-concatenation form in Python (see
+  `scripts/lint_wiki.py` / `scripts/export_bundle.py` — twins, keep in sync).
+- `wiki/sources/raw/local/` and `wiki/internal/` must never appear in
+  `git ls-files`; the script asserts this.

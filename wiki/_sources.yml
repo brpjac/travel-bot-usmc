@@ -21,28 +21,34 @@ sources:
     short_cite: JTR
     filename: Joint Travel Regulations.pdf
     doc_type: standing_regulation
-    as_of: 2021-12-01
+    as_of: 2026-07-01
     distribution: public
     local_only: false
     in_faiss: true
     scanned: false
     notes: >
-      The JTR is updated monthly; this copy is Dec 2021 and should be refreshed.
-      Rates and some policies may be stale — see reference/precedence-and-currency.md.
+      Refreshed 2026-07-19 from travel.dod.mil (edition 07/01/2026; replaced the
+      Dec 2021 copy, which is retained in git history). The JTR updates monthly;
+      re-verify page-number citations when refreshing. Key confirmations at
+      refresh: par. 032304.B.1 now reads $750/round trip (anchors C041);
+      par. 020210 Table 2-10 (400/800-mile rule) unchanged at p. 2-23.
 
   - source_id: SRC-MCRAMM
-    title: MCO 1001R.1K (MCRAMM)
-    short_cite: MCO 1001R.1K
-    filename: mco 1001r.1k.pdf
+    title: MCO 1001R.1L (MCRAMM)
+    short_cite: MCO 1001R.1L
+    filename: mco 1001r.1l.pdf
     doc_type: standing_order
-    as_of: 2009-03-22
-    distribution: public
+    as_of: 2015-12-23
+    distribution: public          # Distribution Statement A on the cover
     local_only: false
     in_faiss: true
     scanned: false
     notes: >
-      Marine Corps Reserve Administrative Management Manual. Note MCO 1001R.1L is
-      referenced by ForO 3000-52.1 (2019) — our copy is one revision behind.
+      Marine Corps Reserve Administrative Management Manual, w/ Admin CH-2
+      (SECURED release from marines.mil MCPEL, captured 2026-07-19). Replaced
+      the 2009 MCO 1001R.1K copy (retained in git history) — this is the
+      revision ForO 3000-52.1 actually references. Source id kept as
+      SRC-MCRAMM so existing page references stay valid.
 
   - source_id: SRC-FORO-3000-52-1
     title: ForO 3000-52.1 (MARFORRES TEEP/T3 SOP)

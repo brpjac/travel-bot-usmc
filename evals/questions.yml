@@ -1,0 +1,221 @@
+# Golden questions for the MIU Travel Bot — graded deterministically by
+# scripts/eval.py against the live two-call pipeline.
+#
+# Grading fields (substring matches are case-insensitive against the CLEAN
+# answer text; claim checks read the parsed CLAIMS trailer, not prose):
+#   expect_claims:       ANY-OF — at least one must be in the trailer
+#   expect_claims_all:   ALL-OF
+#   forbid_claims:       none may appear (tombstones, wrong-branch claims)
+#   expect_substrings:   all must appear in the answer
+#   expect_any_substring: at least one must appear
+#   forbid_substrings:   none may appear
+#   expect_pages:        ANY-OF against router-loaded pages (router accuracy,
+#                        reported separately; [] = expect no pages)
+#   expect_faiss:        bool — FAISS fallback fired
+#   expect_no_claims:    bool — trailer must be empty (refusals)
+#   max_words:           answer length cap (default 200; brevity mandate)
+#   history:             optional conversation context passed to the bot
+#
+# WHEN A QUESTION FAILS, FIX THE RIGHT LAYER:
+#   router missed pages      -> that page's description: frontmatter (it IS the
+#                               router catalog); regen _map.md
+#   wrong/missing number     -> claim text in _claims.yml or the page wording;
+#                               check the page cites the claim inline
+#   number right, no cite    -> SYSTEM_PROMPT rule 2/3 or page missing [C###]
+#   refusal case answered    -> SYSTEM_PROMPT rule 4, or an over-broad page
+#                               description pulling irrelevant pages in
+#   expect_faiss miss        -> ROUTER_PROMPT needs_faiss guidance — or the
+#                               wiki actually covers it (fix the eval)
+#   over max_words           -> SYSTEM_PROMPT rule 1, or the page is bloated
+
+questions:
+  - id: Q01-orders-type-offsite
+    question: "My unit is drilling at a site 60 miles from our HTC. What orders type do I need and when do I submit the request?"
+    expect_claims: [C003, C004]
+    expect_substrings: ["offsite", "45 days"]
+    expect_pages: [orders-types/choosing-orders-type.md, orders-types/offsite-idt.md, process/orders-request-miu.md]
+    notes: "50-mile threshold -> Offsite IDT + the 45-day CONUS lead time."
+
+  - id: Q02-at-vs-ados
+    question: "I have a 5-day exercise CONUS. Should I be on AT or ADOS orders, and how far out do I request them?"
+    expect_claims: [C008, C005]
+    expect_substrings: ["ADOS", "2 weeks"]
+    expect_pages: [orders-types/choosing-orders-type.md, orders-types/ados.md]
+    notes: "<7 days -> ADOS; ADOS CONUS lead time 2 weeks."
+
+  - id: Q03-rental-on-idt
+    question: "Can I get a rental car on regular IDT orders at my home training center?"
+    expect_claims: [C001]
+    expect_any_substring: ["no", "not"]
+    expect_pages: [orders-types/idt.md, entitlements/entitlements-matrix.md]
+    notes: "IDT at HTC carries no travel entitlements."
+
+  - id: Q04-idtr-cap
+    question: "What is the maximum IDT travel reimbursement per round trip right now?"
+    expect_claims_all: [C041]
+    forbid_claims: [C017]
+    expect_substrings: ["$750"]
+    expect_pages: [entitlements/idt-travel-reimbursement.md]
+    notes: "MARADMIN 157/25 supersession; the retired C017 tombstone must not be cited as support."
+
+  - id: Q05-t3-oconus-ladder
+    question: "I'm flying commercial air OCONUS as an individual. When must my T3 request and my TOP request be submitted?"
+    expect_claims_all: [C022, C023]
+    expect_substrings: ["D-50", "D-45"]
+    expect_pages: [process/t3-timelines.md]
+    notes: "The core deadline-ladder question the unit actually fails at."
+
+  - id: Q06-t3-conus-group
+    question: "Our 30-Marine detachment is flying CONUS commercial air. What are the T3 and TOP deadlines?"
+    expect_claims: [C024, C025]
+    expect_substrings: ["D-35", "D-30"]
+    forbid_substrings: ["D-65"]
+    expect_pages: [process/t3-timelines.md]
+    notes: "A group of 30 is NOT a charter (100+); the charter deadline must not leak in."
+
+  - id: Q07-waiver-20-days
+    question: "We missed the CONUS TOP submission window and the flight departs in 20 days. Who has to endorse the late request?"
+    expect_claims: [C028]
+    expect_substrings: ["G-3/5"]
+    expect_pages: [process/t3-waivers.md]
+    notes: ">15 days out -> MSC G-3/5 endorsement, not Chief of Staff."
+
+  - id: Q08-orders-not-approved-d10
+    question: "My flight is 10 days out and my orders still are not approved. What happens to my reservation?"
+    expect_claims: [C034]
+    expect_substrings: ["Chief of Staff"]
+    expect_any_substring: ["cancel", "cancelled", "canceled"]
+    expect_pages: [process/t3-timelines.md, process/t3-waivers.md]
+    notes: "The D-15 tripwire: cancellation + CoS-waiver resubmission."
+
+  - id: Q09-faiss-deep-cut
+    question: "What does the JTR say about reimbursement of passport and visa fees for official travel?"
+    expect_faiss: true
+    expect_any_substring: ["passport"]
+    notes: "Not on any wiki page -> FAISS fallback into the raw JTR. Graded mostly on routing."
+
+  - id: Q10-refusal-leave
+    question: "How many days of leave can I sell back when I EAS?"
+    expect_no_claims: true
+    expect_any_substring: ["don't have enough information", "not in the loaded regulations", "check with your S-1"]
+    expect_pages: []
+    notes: "Leave sell-back is pay/admin, not travel — must refuse, not improvise."
+
+  - id: Q11-oconus-orders-apacs
+    question: "What lead time and extra requirements apply when I request AT orders for an exercise in Japan?"
+    expect_claims: [C006]
+    expect_substrings: ["60 days", "APACS"]
+    expect_pages: [process/orders-request-miu.md, orders-types/at.md]
+    notes: "OCONUS AT: 60-day lead + APACS on top of Medical/GTCC/Residence."
+
+  - id: Q12-prereqs
+    question: "What do I need to be current on before MIU will process my orders request?"
+    expect_claims: [C009]
+    expect_substrings: ["Medical", "GTCC"]
+    expect_pages: [process/orders-request-miu.md]
+    notes: "Medical, GTCC, Primary Residence (+APACS OCONUS)."
+
+  - id: Q13-idt-lodging-exception
+    question: "Drill runs 14 hours and I live an hour away. Can my CO authorize lodging on IDT?"
+    expect_claims: [C010]
+    expect_substrings: ["12 hours"]
+    expect_any_substring: ["written", "travel order"]
+    expect_pages: [entitlements/lodging.md]
+    notes: "CO exception: mission-required overnight + duty >12 hrs + written order."
+
+  - id: Q14-under-50-options
+    question: "My duty site is 30 miles from the HTC but I need a rental car and lodging. What are my options?"
+    expect_claims: [C015]
+    expect_substrings: ["ADOS"]
+    expect_pages: [orders-types/choosing-orders-type.md, orders-types/ados.md]
+    notes: "Under-50-miles trap: CO lodging exception or ADOS orders."
+
+  - id: Q15-pov-500-miles
+    question: "I want to drive my own car 500 miles one way to an AT site. Will I get full mileage?"
+    expect_claims: [C018]
+    expect_substrings: ["400"]
+    expect_any_substring: ["case-by-case", "constructed", "AO"]
+    expect_pages: [entitlements/pov-mileage.md, reference/distance-thresholds.md]
+    notes: ">400 one-way: AO case-by-case + constructed-cost limits."
+
+  - id: Q16-charter-ladder
+    question: "We're moving 150 Marines by charter for an exercise. When are the T3 and TOP requests due?"
+    expect_claims: [C020, C021]
+    expect_substrings: ["D-65", "D-60"]
+    expect_pages: [process/t3-timelines.md]
+    notes: "100+ pax = charter: D-65/D-60."
+
+  - id: Q17-gtcc-d10
+    question: "Why does my GTCC need to be active 10 days before my flight?"
+    expect_claims: [C026]
+    expect_any_substring: ["cancel", "ticket"]
+    expect_pages: [process/t3-timelines.md]
+    notes: "D-10: IBA active + authenticated orders attached or DMO cancels."
+
+  - id: Q18-tot-cargo
+    question: "When must our unit's equipment shipment request reach DMO for a CONUS exercise?"
+    expect_claims: [C035]
+    expect_substrings: ["30 days"]
+    forbid_substrings: ["D-35"]
+    expect_pages: [process/t3-timelines.md]
+    notes: "TOT (cargo) CONUS = 30 days; must not conflate with the passenger D-35."
+
+  - id: Q19-voucher-deadline
+    question: "How long after I get back do I have to submit my travel voucher?"
+    expect_claims: [C037]
+    expect_substrings: ["5 working days"]
+    expect_pages: [process/mrows-dts-orders.md]
+    notes: "DD 1351-2 / DTS voucher NLT 5 working days after travel."
+
+  - id: Q20-idtr-eligibility
+    question: "I live 200 miles from my unit. Do I automatically qualify for the IDT travel reimbursement?"
+    expect_claims: [C042]
+    expect_any_substring: ["billet", "BIC", "critical"]
+    expect_pages: [entitlements/idt-travel-reimbursement.md]
+    notes: "150 miles alone is not enough — billet + BIC gates apply."
+
+  - id: Q21-idtr-trip-limit
+    question: "How many IDT travel reimbursement trips can I claim in a fiscal year?"
+    expect_claims: [C043]
+    expect_substrings: ["11"]
+    expect_pages: [entitlements/idt-travel-reimbursement.md]
+    notes: "11/FY (22 for DIFOP aviators)."
+
+  - id: Q22-idtr-command-denial
+    question: "My command says they won't approve my IDT-R claim even though I'm on the eligibility roster. Can they do that?"
+    expect_claims: [C046]
+    expect_any_substring: ["not authorized to deny", "cannot deny", "may not deny"]
+    expect_pages: [entitlements/idt-travel-reimbursement.md]
+    notes: "MARADMIN 157/25 para 6.h: commanders may not deny eligible requests."
+
+  - id: Q23-precedence-hedge
+    question: "If a MARADMIN conflicts with a Force Order, which one wins?"
+    expect_claims: [C033]
+    expect_any_substring: ["not settled", "needs review", "unit practice", "not yet pinned", "confirm with"]
+    expect_pages: [reference/precedence-and-currency.md]
+    notes: "C033 is needs_review — the answer must hedge, not assert."
+
+  - id: Q24-split-at
+    question: "Can I split my annual training into two periods, and who approves that?"
+    expect_claims: [C038]
+    expect_substrings: ["15 days"]
+    expect_any_substring: ["MSC G3", "MSC G-3", "once"]
+    expect_pages: [process/teep-funding.md, orders-types/at.md]
+    notes: "Split AT: <=15 days total, MSC G3 approves, split once."
+
+  - id: Q25-refusal-hhg
+    question: "What's my household goods weight allowance for a PCS move?"
+    expect_no_claims: true
+    expect_any_substring: ["don't have enough information", "not in the loaded regulations", "check with your S-1", "full JTR"]
+    notes: "PCS/HHG is out of wiki scope; FAISS may find JTR text, but without wiki grounding the safe answer is the refusal + JTR pointer. Accepts either refusal phrasing."
+
+  - id: Q26-followup-context
+    question: "What about OCONUS?"
+    history: |
+      Recent conversation for context:
+      Marine: When do I need to submit my TOP request for a CONUS flight?
+      Assistant: Your CONUS commercial air TOP request must reach DMO with authenticated orders by D-30 (ForO 3000-52.1, Ch 5).
+    expect_claims: [C023]
+    expect_substrings: ["D-45"]
+    expect_pages: [process/t3-timelines.md]
+    notes: "Follow-up resolution: 'what about OCONUS' after a CONUS TOP answer -> D-45."

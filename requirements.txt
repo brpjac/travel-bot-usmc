@@ -1,17 +1,21 @@
+# Pinned with ~= (compatible-release) so Streamlit Cloud redeploys can't drift —
+# the committed FAISS pickle in vectorstore/ is version-sensitive to
+# langchain-community. Refresh pins deliberately, then rebuild/verify FAISS.
+
 # LLM (plain Google SDK — structured output + reliable usage metadata)
-google-genai>=1.0.0
-pydantic>=2.0
+google-genai~=2.12
+pydantic~=2.13
 
 # FAISS deep-search fallback (LangChain kept only for the vectorstore format)
-langchain-community>=0.3.0
-langchain-huggingface>=0.1.0
-langchain-text-splitters>=0.3.0
-sentence-transformers>=3.0.0
-faiss-cpu>=1.9.0
+langchain-community~=0.4.2
+langchain-huggingface~=1.2
+langchain-text-splitters~=1.1
+sentence-transformers~=5.6
+faiss-cpu~=1.14
 
 # Ingestion
-pymupdf>=1.25.0
-pyyaml>=6.0
+pymupdf~=1.28
+pyyaml~=6.0
 
 # Frontend
-streamlit>=1.40.0
+streamlit~=1.59

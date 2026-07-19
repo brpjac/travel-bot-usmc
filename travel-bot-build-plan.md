@@ -1,5 +1,10 @@
 # MIU Travel Regulation Bot - Build Plan
 
+> **HISTORICAL (March 2026) — SUPERSEDED.** This describes the original
+> chunk-RAG design (Gemini 1.5 Flash, LangChain retrieval, Google embeddings),
+> which was replaced in July 2026 by the wiki knowledge layer + agentic
+> two-call bot. Current architecture: [CLAUDE.md](CLAUDE.md).
+
 ## What This Is
 RAG-based chatbot that answers travel policy questions for reserve Marines by referencing JTR, MCRAM, MARADMINs, and related orders. Hosted on a public URL, free to run.
 

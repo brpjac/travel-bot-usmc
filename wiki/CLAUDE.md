@@ -10,8 +10,8 @@ last_reviewed: 2026-07-17
 # MIU Travel Wiki
 
 Travel guidance for USMC reserve Marines (Marine Innovation Unit / MARFORRES).
-Distilled from the JTR, MCO 1001R.1K (MCRAMM), ForO 3000-52.1 (TEEP/T3 SOP),
-and MIU unit procedures. **This wiki is the knowledge layer** — for humans
+Distilled from the JTR, MCO 1001R.1L (MCRAMM), ForO 3000-52.1 (TEEP/T3 SOP),
+MARADMIN 157/25, and MIU unit procedures. **This wiki is the knowledge layer** — for humans
 browsing, for the bot answering, and for any agent pointed at this folder.
 
 **Not authoritative.** Always verify with your S-1 and the current regulations

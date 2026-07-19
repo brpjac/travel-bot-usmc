@@ -1,0 +1,52 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Wiki lint (incl. distribution guard)
+        run: python scripts/lint_wiki.py
+      - name: Map is current
+        run: python scripts/generate_wiki_map.py --check
+      - name: Bundle export (exercises the guard)
+        run: python scripts/export_bundle.py
+
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-ci.txt
+      - name: Syntax
+        run: python -m py_compile app.py bot.py planner.py scripts/*.py
+      - name: Imports stay light (no torch, no model calls)
+        run: python -c "import bot, planner, app"
+      - name: Planner tests
+        run: python -m pytest tests/test_planner.py -q
+
+  # Manual answer-quality run: needs the GOOGLE_API_KEY repo secret.
+  eval:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-ci.txt
+      - name: Eval suite
+        run: python scripts/eval.py --no-faiss --min-pass 0.8
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}

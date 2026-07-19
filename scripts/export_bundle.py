@@ -12,9 +12,10 @@ Usage:
   python3 scripts/export_bundle.py --with-raw  # + committed raw PDFs (never raw/local/)
   python3 scripts/export_bundle.py --full      # onefile also inlines sources/ extracts
 
-Stdlib only. The gitignored distribution boundary (wiki/sources/raw/local/) is
-NEVER exported; a marking-string guard scans the output and fails the export
-on any hit.
+Stdlib + pyyaml. The gitignored distribution boundary (wiki/sources/raw/local/)
+is NEVER exported; a marking-string guard scans the output and fails the export
+on any hit. Also emits QUESTIONS.md — a validation answer key generated from
+evals/questions.yml so units can spot-check any agent they point at the bundle.
 """
 
 import argparse
@@ -23,6 +24,11 @@ import shutil
 import sys
 import zipfile
 from pathlib import Path
+
+try:
+    import yaml  # only needed for the QUESTIONS.md answer key
+except ImportError:
+    yaml = None
 
 REPO = Path(__file__).resolve().parent.parent
 WIKI = REPO / "wiki"
@@ -153,6 +159,35 @@ def main():
     claude_md = (WIKI / "CLAUDE.md").read_text(encoding="utf-8")
     _, index_body = fm_and_body(claude_md)
     (BUNDLE / "AGENTS.md").write_text(AGENTS_HEADER + index_body, encoding="utf-8")
+
+    # QUESTIONS.md — validation answer key from the eval suite.
+    questions_file = REPO / "evals" / "questions.yml"
+    if yaml is None:
+        print("note: pyyaml not available — skipping QUESTIONS.md answer key")
+    elif questions_file.exists():
+        claims = {c["id"]: c for c in yaml.safe_load(
+            (WIKI / "_claims.yml").read_text(encoding="utf-8"))["claims"]}
+        qlines = [
+            "# Validation Questions",
+            "",
+            "Ask these of any agent pointed at this bundle to check it reads the",
+            "wiki correctly. Expected facts below each question (from the claims",
+            "registry). A good agent also cites the source document.",
+            "",
+        ]
+        for q in yaml.safe_load(questions_file.read_text(encoding="utf-8"))["questions"]:
+            if q.get("history"):
+                continue  # multi-turn cases don't translate to a printed key
+            qlines.append(f"**{q['question']}**")
+            if q.get("expect_no_claims"):
+                qlines.append("- Expected: a refusal — this is outside the loaded regulations.")
+            else:
+                for cid in (q.get("expect_claims_all", []) + q.get("expect_claims", []))[:3]:
+                    c = claims.get(cid)
+                    if c:
+                        qlines.append(f"- {c['claim']} ({c['source']})")
+            qlines.append("")
+        (BUNDLE / "QUESTIONS.md").write_text("\n".join(qlines), encoding="utf-8")
 
     # Distribution guard — fail the whole export on any hit.
     hits = guard(BUNDLE)

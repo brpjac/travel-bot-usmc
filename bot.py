@@ -12,7 +12,9 @@ The wiki (wiki/) is the knowledge layer; FAISS only serves verbatim deep-cuts
 from the raw JTR/MCRAMM PDFs.
 """
 
+import os
 import re
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -22,10 +24,17 @@ from pydantic import BaseModel
 
 REPO_ROOT = Path(__file__).parent
 WIKI_DIR = REPO_ROOT / "wiki"
-MODEL = "gemini-2.5-flash"
+
+# Router runs on flash-lite (separate free-tier quota → doubles daily question
+# capacity); the answer stays on flash. Override via env for paid tiers/testing.
+ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL", "gemini-2.5-flash-lite")
+ANSWER_MODEL = os.environ.get("MIU_ANSWER_MODEL", "gemini-2.5-flash")
 
 MAX_PAGES = 4
 FAISS_K = 6
+
+# Shared claim-ID pattern (also used by scripts/eval.py). 3+ digits: C041, C1000.
+CLAIM_ID_RE = re.compile(r"C\d{3,}")
 
 
 class RouterDecision(BaseModel):
@@ -34,17 +43,20 @@ class RouterDecision(BaseModel):
     faiss_query: str | None = None
 
 
+# NOTE: both prompt templates go through str.format() — never add literal { }
+# braces to them (e.g. JSON examples); doing so breaks every call at runtime.
 ROUTER_PROMPT = """\
 You are the routing step for a USMC reserve travel-regulations assistant.
 Given the question (and recent conversation), pick which wiki pages to load.
+Today's date: {today}.
 
 Rules:
 - Choose 0-4 page paths, EXACTLY as they appear in the catalog below.
 - Prefer `topic` and `index` pages. Pick a `source_extract` page only when the
   user wants exact/verbatim regulation wording.
 - Set needs_faiss=true (with a focused faiss_query) only when the question
-  needs deep Joint Travel Regulations or MCO 1001R.1K text that no wiki page
-  covers — e.g. an obscure JTR entitlement not in the catalog.
+  needs deep Joint Travel Regulations or MCRAMM (MCO 1001R.1L) text that no
+  wiki page covers — e.g. an obscure JTR entitlement not in the catalog.
 - If nothing in the catalog fits, return an empty pages list.
 
 PAGE CATALOG (path | type | description):
@@ -55,36 +67,46 @@ PAGE CATALOG (path | type | description):
 
 SYSTEM_PROMPT = """\
 You are the MIU Travel Regulation Assistant for United States Marine Corps
-reserve Marines. Answer using ONLY the wiki pages, claims registry, and
-regulation excerpts provided below. Follow these rules strictly:
+reserve Marines. Today's date: {today}. Answer using ONLY the wiki pages,
+claims registry, and regulation excerpts provided below. Follow these rules
+strictly:
 
-1. **Cite everything.** Cite registry facts by claim ID in brackets, e.g.
-   [C020]. For regulation text, copy the parenthetical citations exactly as
-   they appear in the wiki pages, e.g. (ForO 3000-52.1, Ch 5, p. 5-6) or
-   (JTR, par. 020210, Table 2-10, p. 2-20).
+1. **Less is more.** Lead with the direct answer in your first sentence. Keep
+   the whole reply well under 120 words unless the Marine genuinely has
+   multiple options to weigh. No filler ("It is important to note...", "Great
+   question"), no restating the question, no headers for short answers.
 
-2. **Do not guess.** If the provided material does not answer the question,
+2. **Cite naturally.** Name the source in parentheses where a fact lands, e.g.
+   (MARADMIN 157/25) or (ForO 3000-52.1, Ch 5) — section/page only when it
+   helps someone look it up. NEVER show internal claim IDs like C041 in the
+   answer text. Cite each fact once; don't stack citations.
+
+3. **Machine trailer (required).** After your answer, on its own final line,
+   list the internal claim IDs your answer relied on:
+   CLAIMS: C041, C044
+   If none apply, write: CLAIMS: none
+   This line is stripped before display — never reference it in prose.
+
+4. **Do not guess.** If the provided material does not answer the question,
    say: "I don't have enough information in the loaded regulations to answer
    that. Please check with your S-1 or refer to the full JTR."
 
-3. **Respect claim status.** A claim marked needs_review is not settled — say
-   so. JTR-sourced numbers come from the Dec 2021 edition; add that caveat
-   when a rate or dollar amount matters.
+5. **Respect claim status.** A claim marked needs_review is not settled — say
+   so briefly. If a claim's source string flags an old edition or a
+   supersession, carry that caveat into the answer only when the number
+   itself is the answer.
 
-4. **MARADMIN precedence.** If sources conflict, newer specific direction
-   (e.g. a MARADMIN) supersedes standing orders — note the conflict explicitly.
+6. **Present options only when they exist.** If a Marine asks what they can
+   do and there are real alternatives, list them tersely with what each one
+   rates. Otherwise just answer.
 
-5. **Be practical — present options as a decision tree.** When a Marine asks
-   what they can do, lay out ALL their options with what each one gets them,
-   and connect the orders type to what the Marine actually rates (lodging, per
-   diem, rental car, mileage). Include deadlines, form names, submission
-   requirements, and who to contact when the sources provide them.
+7. **Plain language; DTS is a tool, not an orders type.** The orders types
+   are IDT, Offsite IDT, AT, and ADOS. If sources conflict, newer specific
+   direction (e.g. a MARADMIN) supersedes standing orders — say so.
 
-6. **Use plain language.** Explain regulation language in terms a junior
-   Marine can understand, but always include the exact citation.
-
-7. **DTS is a tool, not an orders type.** The orders types are IDT, Offsite
-   IDT, AT, and ADOS. Never list "DTS" as a type of orders.
+8. **Exact dates.** For deadline math on a specific trip, give the D-offsets
+   with citations, then add: "For exact dates and a calendar download, use
+   the Trip Planner at the top of this page."
 
 === CLAIMS REGISTRY (id | claim | source | status) ===
 {claims}
@@ -126,7 +148,9 @@ def load_claims_table() -> tuple[str, dict]:
 def read_pages(paths: list[str]) -> tuple[str, list[str]]:
     """Read selected wiki pages, path-validated against the wiki root."""
     blocks, loaded = [], []
-    for rel in paths[:MAX_PAGES]:
+    seen = set()
+    deduped = [p for p in paths if not (p in seen or seen.add(p))]
+    for rel in deduped[:MAX_PAGES]:
         target = (WIKI_DIR / rel).resolve()
         if not target.is_file() or WIKI_DIR.resolve() not in target.parents:
             continue
@@ -165,14 +189,15 @@ def _usage(resp) -> dict:
     }
 
 
-def route(client, catalog: str, history: str, question: str) -> tuple[RouterDecision, dict]:
+def route(client, catalog: str, history: str, question: str, today: str) -> tuple[RouterDecision, dict]:
     prompt = ROUTER_PROMPT.format(
         catalog=catalog,
         history=(history + "\n") if history else "",
         question=question,
+        today=today,
     )
     resp = client.models.generate_content(
-        model=MODEL,
+        model=ROUTER_MODEL,
         contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0,
@@ -185,7 +210,8 @@ def route(client, catalog: str, history: str, question: str) -> tuple[RouterDeci
     return decision, _usage(resp)
 
 
-def answer(client, claims: str, pages_text: str, faiss_text: str, history: str, question: str) -> tuple[str, dict]:
+def answer(client, claims: str, pages_text: str, faiss_text: str, history: str,
+           question: str, today: str) -> tuple[str, dict]:
     faiss_section = ""
     if faiss_text:
         faiss_section = f"\n=== REGULATION EXCERPTS (vector search over raw JTR/MCRAMM) ===\n{faiss_text}\n"
@@ -195,29 +221,51 @@ def answer(client, claims: str, pages_text: str, faiss_text: str, history: str, 
         faiss_section=faiss_section,
         history=(history + "\n") if history else "",
         question=question,
+        today=today,
     )
     resp = client.models.generate_content(
-        model=MODEL,
+        model=ANSWER_MODEL,
         contents=prompt,
         config=types.GenerateContentConfig(temperature=0.1),
     )
     return resp.text or "", _usage(resp)
 
 
-def cited_claims(answer_text: str, claims_index: dict) -> list[str]:
-    """Pull [C###] cites out of the answer and render their registry rows."""
+def split_claims_trailer(text: str) -> tuple[str, list[str]]:
+    """Split the machine trailer ('CLAIMS: C041, C044' / 'CLAIMS: none') off an
+    answer. Returns (clean display text, claim id list). Tolerates a missing
+    trailer and stray inline IDs (belt-and-suspenders sweep of the whole text)."""
+    ids: list[str] = []
+    lines = text.rstrip().splitlines()
+    body = text.rstrip()
+    for i in range(len(lines) - 1, max(len(lines) - 3, -1), -1):
+        if lines[i].strip().upper().startswith("CLAIMS:"):
+            ids = CLAIM_ID_RE.findall(lines[i])
+            body = "\n".join(lines[:i]).rstrip()
+            break
+    if not ids:
+        ids = CLAIM_ID_RE.findall(body)
+    # Strip any bracketed IDs the model left in prose despite instructions.
+    body = re.sub(r"\s*\[C\d{3,}\]", "", body)
+    return body, sorted(set(ids))
+
+
+def cited_claims(claim_ids: list[str], claims_index: dict) -> list[str]:
+    """Render cited claims for the Sources panel — human-readable, no C### shown."""
     out = []
-    for cid in sorted(set(re.findall(r"\[(C\d{3})\]", answer_text))):
+    for cid in claim_ids:
         c = claims_index.get(cid)
         if c:
-            out.append(f"**{cid}** — {c['claim']} _({c['source']})_")
+            out.append(f"{c['claim']} _({c['source']})_")
     return out
 
 
 def ask(client, vectorstore, catalog: str, claims: str, claims_index: dict,
-        history: str, question: str) -> dict:
-    """Full two-call pipeline. Returns answer text, sources, and per-call usage."""
-    decision, router_usage = route(client, catalog, history, question)
+        history: str, question: str, today: str | None = None) -> dict:
+    """Full two-call pipeline. Returns clean answer text, sources, per-call usage.
+    `today` is injectable so evals can pin the date."""
+    today = today or date.today().isoformat()
+    decision, router_usage = route(client, catalog, history, question, today)
 
     pages_text, loaded_pages = read_pages(decision.pages)
     if not loaded_pages and not decision.needs_faiss:
@@ -228,13 +276,16 @@ def ask(client, vectorstore, catalog: str, claims: str, claims_index: dict,
     if decision.needs_faiss and vectorstore is not None:
         faiss_text, faiss_citations = faiss_search(vectorstore, decision.faiss_query or question)
 
-    text, answer_usage = answer(client, claims, pages_text, faiss_text, history, question)
+    raw_text, answer_usage = answer(client, claims, pages_text, faiss_text,
+                                    history, question, today)
+    text, claim_ids = split_claims_trailer(raw_text)
 
     return {
         "answer": text,
+        "claim_ids": claim_ids,
         "pages": loaded_pages,
         "faiss_citations": faiss_citations,
-        "claim_citations": cited_claims(text, claims_index),
+        "claim_citations": cited_claims(claim_ids, claims_index),
         "usage": [
             {"call_type": "router", **router_usage},
             {"call_type": "answer", **answer_usage},

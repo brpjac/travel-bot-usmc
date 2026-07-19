@@ -40,7 +40,7 @@ The descent to ground truth. Two layers:
 - `maradmin-157-25/` — [message.md](maradmin-157-25/message.md): the full
   IDT Travel Reimbursement Update ($500→$750), captured verbatim from
   marines.mil; the raw PDF is an archival capture generated from this text.
-- `mcramm/` — (none yet) MCO 1001R.1K chapters get transcribed here when a
+- `mcramm/` — (none yet) MCO 1001R.1L chapters get transcribed here when a
   topic page pins a MCRAMM citation.
 
 ## What's NOT here
