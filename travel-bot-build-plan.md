@@ -89,7 +89,7 @@ Repeatable process for adding a MARADMIN or new order:
 | Model hallucinates policy that isn't in the docs | System prompt constrains to source text only. Citations let users verify. Disclaimer banner. |
 | MARADMIN supersedes standing order but model doesn't flag it | Tag doc_type in metadata, explicit system prompt instruction on precedence |
 | Gemini free tier rate limits hit | Unlikely for a reserve unit. If it happens, Groq free tier is the backup. |
-| Someone asks about CUI/FOUO content | Don't load CUI docs. JTR and MCRAM are publicly available. MARADMINs that reference CUI should be excluded. |
+| Someone asks about controlled/marked content | Don't load controlled documents (CUI-type or official-use-only markings). JTR and MCRAM are publicly available. MARADMINs that reference controlled material should be excluded. |
 
 ## Estimated Build Time
 - Phase 1-2: 2-3 hours (mostly PDF cleanup)

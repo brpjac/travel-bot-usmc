@@ -5,8 +5,11 @@ Usage:
     python scripts/ingest.py                # Full rebuild
     python scripts/ingest.py --incremental  # Only process new/changed files
 
-Reads PDFs and .txt files from docs/, extracts text, chunks with metadata,
-embeds locally with all-MiniLM-L6-v2, and saves a FAISS index to vectorstore/.
+Reads PDFs and .txt files from wiki/sources/raw/, extracts text, chunks with
+metadata, embeds locally with all-MiniLM-L6-v2, and saves a FAISS index to
+vectorstore/. The source registry is wiki/_sources.yml; files registered with
+in_faiss: false (scanned or marked documents) are skipped explicitly — their
+searchable form is the wiki itself.
 """
 
 import argparse
@@ -15,6 +18,7 @@ import json
 import re
 import sys
 import pymupdf
+import yaml
 from pathlib import Path
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -22,29 +26,36 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
 # Paths
-DOCS_DIR = Path(__file__).parent.parent / "docs"
-VECTORSTORE_DIR = Path(__file__).parent.parent / "vectorstore"
-METADATA_FILE = DOCS_DIR / "metadata.json"
+REPO_ROOT = Path(__file__).parent.parent
+RAW_DIR = REPO_ROOT / "wiki" / "sources" / "raw"
+VECTORSTORE_DIR = REPO_ROOT / "vectorstore"
+SOURCES_FILE = REPO_ROOT / "wiki" / "_sources.yml"
 MANIFEST_FILE = VECTORSTORE_DIR / "manifest.json"
 
 # Batching config (for memory efficiency, no rate limits with local model)
 EMBED_BATCH_SIZE = 100
 
 
-def load_metadata_registry() -> dict:
-    """Load document metadata from docs/metadata.json."""
-    if METADATA_FILE.exists():
-        with open(METADATA_FILE) as f:
-            return json.load(f)
+def load_sources_registry() -> dict:
+    """Load the source registry from wiki/_sources.yml, keyed by filename."""
+    if SOURCES_FILE.exists():
+        with open(SOURCES_FILE) as f:
+            data = yaml.safe_load(f) or {}
+        return {entry["filename"]: entry for entry in data.get("sources", [])}
     return {}
 
 
 def get_doc_metadata(filename: str, registry: dict) -> dict:
-    """Match a filename to its metadata from the registry."""
+    """Match a filename to its FAISS chunk metadata from the registry."""
     if filename in registry:
-        return registry[filename].copy()
+        entry = registry[filename]
+        return {
+            "source_doc": entry["title"],
+            "doc_type": entry.get("doc_type", "unknown"),
+            "date": str(entry.get("as_of", "unknown")),
+        }
     # Fallback for unknown docs
-    print(f"  WARNING: '{filename}' not found in metadata.json — using defaults")
+    print(f"  WARNING: '{filename}' not found in _sources.yml — using defaults")
     return {
         "source_doc": filename,
         "doc_type": "unknown",
@@ -274,19 +285,33 @@ def main():
 
     print("=== MIU Travel Bot - Document Ingestion ===\n")
 
-    # Load metadata registry
-    registry = load_metadata_registry()
+    # Load source registry
+    registry = load_sources_registry()
     if registry:
-        print(f"Loaded metadata for {len(registry)} documents from metadata.json")
+        print(f"Loaded registry for {len(registry)} documents from wiki/_sources.yml")
     else:
-        print("WARNING: No metadata.json found — all documents will use default metadata")
+        print("WARNING: No _sources.yml found — all documents will use default metadata")
 
-    # Find all ingestible files
+    # Find all ingestible files (non-recursive: raw/local/ is deliberately excluded)
     source_files = sorted(
-        list(DOCS_DIR.glob("*.pdf")) + list(DOCS_DIR.glob("*.txt"))
+        list(RAW_DIR.glob("*.pdf")) + list(RAW_DIR.glob("*.txt"))
     )
     if not source_files:
-        print(f"No PDFs or .txt files found in {DOCS_DIR}")
+        print(f"No PDFs or .txt files found in {RAW_DIR}")
+        return
+
+    # Skip files registered as in_faiss: false (scanned/marked docs — the wiki is
+    # their searchable form). Explicit, never silent.
+    ingestible = []
+    for f in source_files:
+        entry = registry.get(f.name, {})
+        if entry and not entry.get("in_faiss", True):
+            print(f"  SKIP (in_faiss: false): {f.name} — searchable via wiki pages/extracts")
+        else:
+            ingestible.append(f)
+    source_files = ingestible
+    if not source_files:
+        print("All files are registered in_faiss: false — nothing to ingest.")
         return
 
     # Incremental mode: filter to new/changed files only
@@ -354,10 +379,13 @@ def main():
     vectorstore.save_local(str(VECTORSTORE_DIR))
     print(f"\nVector store saved to {VECTORSTORE_DIR}/")
 
-    # Update manifest
+    # Update manifest (ingested files only — in_faiss: false docs are not tracked here)
     new_manifest = manifest.copy() if args.incremental else {}
-    all_files = sorted(list(DOCS_DIR.glob("*.pdf")) + list(DOCS_DIR.glob("*.txt")))
+    all_files = sorted(list(RAW_DIR.glob("*.pdf")) + list(RAW_DIR.glob("*.txt")))
     for f in all_files:
+        entry = registry.get(f.name, {})
+        if entry and not entry.get("in_faiss", True):
+            continue
         new_manifest[f.name] = {
             "hash": file_hash(f),
             "processed": True,

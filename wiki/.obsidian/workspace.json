@@ -1,0 +1,200 @@
+{
+  "main": {
+    "id": "cf2a5e48cf4f57c0",
+    "type": "split",
+    "children": [
+      {
+        "id": "735d23d118448cfe",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b1b9ba91e1924db2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "reference/source-documents.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "source-documents"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "375148f90547cfe8",
+    "type": "split",
+    "children": [
+      {
+        "id": "0b899efb15a35291",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0bb148975f74bbee",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "32e93b1f0cfce127",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "c81f99e2b2073d36",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5bedbff14f875bad",
+    "type": "split",
+    "children": [
+      {
+        "id": "62916497fb44f330",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "98c10bc8cb867efa",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "reference/source-documents.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for source-documents"
+            }
+          },
+          {
+            "id": "957a7a55e35ce996",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "reference/source-documents.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from source-documents"
+            }
+          },
+          {
+            "id": "ec6dce7424f6b534",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "666d454760f6f8ab",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "5232f18ee1926867",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "reference/source-documents.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of source-documents"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "b1b9ba91e1924db2",
+  "lastOpenFiles": [
+    "sources/raw/MARADMIN 157-25 IDT Travel Reimbursement.pdf",
+    "sources/maradmin-157-25/message.md",
+    "sources/maradmin-157-25",
+    "reference/CLAUDE.md",
+    "_claims.md",
+    "process/orders-request-miu.md",
+    "orders-types/choosing-orders-type.md",
+    "reference/distance-thresholds.md",
+    "orders-types/at.md",
+    "orders-types/ados.md",
+    "entitlements/entitlements-matrix.md"
+  ]
+}

@@ -1,6 +1,7 @@
 # Secrets
 .streamlit/secrets.toml
 .env
+.claude/settings.local.json
 
 # Python
 __pycache__/
@@ -13,6 +14,15 @@ logs/
 
 # macOS metadata
 .DS_Store
+
+# Distribution boundary — marked/restricted source material stays local, never committed
+wiki/sources/raw/local/
+
+# Future unit-internal wiki pages (ship only in NIPR bundle, never to GitHub)
+wiki/internal/
+
+# Bundle output
+dist/
 
 # Vector store (large binary files — rebuild with ingest.py)
 # Uncomment next line if you want to exclude from git:

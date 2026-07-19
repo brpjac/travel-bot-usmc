@@ -1,0 +1,387 @@
+# Canonical claims registry. Every verifiable number/deadline/rule gets a stable
+# C### ID. _claims.md is the human projection — keep id/claim/source/status/topic
+# synchronized (projection rule). Never reuse an ID; retired claims keep tombstone
+# rows. Assign new IDs sequentially after the highest existing ID.
+#
+# status: active (verified against source) | needs_review (unverified or ambiguous) | retired
+# review_triggers: source_ambiguous | stale_source | point_in_time | conflict
+
+claims:
+  # --- MIU orders mechanics (verified against Orders-Type Matrix, 6 Mar 2026) ---
+  - id: C001
+    category: IDT at HTC
+    claim: "IDT at the HTC carries no per diem, no rental car, and no commercial travel reimbursement"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (Entitlements by Orders Type)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: orders-types/idt.md
+
+  - id: C002
+    category: IDT at HTC
+    claim: "HTC IDT travel: submit the $750 travel voucher NLT 15 days prior to the trip in DTS-R"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (SMCR/HTC requirements)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C003
+    category: Distance Thresholds
+    claim: "More than 50 miles from the HTC triggers Offsite IDT, AT, or ADOS instead of standard IDT"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (destination categories)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: reference/distance-thresholds.md
+
+  - id: C004
+    category: MIU Submission Timelines
+    claim: "Offsite IDT and AT, CONUS: submit Orders Request Form in Correspondence Tracker 45 days prior to travel"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (submission timelines)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/orders-request-miu.md
+
+  - id: C005
+    category: MIU Submission Timelines
+    claim: "ADOS, CONUS: submit Orders Request Form NLT 2 weeks prior to travel"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (submission timelines)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/orders-request-miu.md
+
+  - id: C006
+    category: MIU Submission Timelines
+    claim: "Offsite IDT and AT, OCONUS: submit Orders Request Form 60 days prior; APACS required in addition to Medical/GTCC/Primary Residence"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (OCONUS requirements)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/orders-request-miu.md
+
+  - id: C007
+    category: MIU Submission Timelines
+    claim: "ADOS, OCONUS: submit Orders Request Form NLT 3 weeks prior to travel"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (submission timelines)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/orders-request-miu.md
+
+  - id: C008
+    category: Orders Selection
+    claim: "AT is used for trips longer than 7 days; ADOS for trips shorter than 7 days"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (orders type notes)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: orders-types/choosing-orders-type.md
+
+  - id: C009
+    category: Orders Prerequisites
+    claim: "Orders requests require currency on Medical, GTCC, and Primary Residence (plus APACS for OCONUS)"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (requirements)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/orders-request-miu.md
+
+  - id: C010
+    category: Entitlements
+    claim: "IDT lodging is only available at the HTC; the CO/Authorizing Official can authorize lodging with a written travel order if the overnight stay is mission-required and the duty period exceeds 12 hours"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (entitlements + items of note)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: entitlements/lodging.md
+
+  - id: C011
+    category: Entitlements
+    claim: "ADOS is the most common orders type carrying rental-car entitlement and is often the best option for a short trip needing full TDY entitlements"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (entitlements by orders type)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: orders-types/ados.md
+
+  - id: C012
+    category: Entitlements
+    claim: "Offsite IDT rates per diem (M&IE), lodging if authorized on orders, POV mileage at the standard rate, and rental car only if mission-required and AO-approved"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (entitlements by orders type)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: orders-types/offsite-idt.md
+
+  - id: C013
+    category: Entitlements
+    claim: "AT and ADOS carry full TDY entitlements: per diem, lodging, commercial travel, and rental car when authorized"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (entitlements by orders type)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: entitlements/entitlements-matrix.md
+
+  - id: C014
+    category: Orders Selection
+    claim: "Active Reserve and Active Duty Marines use standard DTS for all travel; DTS is a travel management system, not an orders type"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (service type notes)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/dts-and-claims.md
+
+  - id: C015
+    category: Orders Selection
+    claim: "Under 50 miles from HTC the default is IDT (no travel entitlements); if lodging/rental/per diem are needed, either request a CO exception for IDT lodging or request ADOS orders"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (items of note #4)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: orders-types/choosing-orders-type.md
+
+  - id: C016
+    category: MIU Submission Timelines
+    claim: "HTC IDT travel: notify MIU_Operations@usmc.mil NLT 1 week prior; submit Billeting Request Form with S-4 if lodging is required"
+    source: "MIU Orders-Type Matrix, 6 Mar 2026 (SMCR/HTC requirements)"
+    source_ids: [SRC-MIU-MATRIX]
+    status: active
+    topic: process/orders-request-miu.md
+
+  # --- JTR numbers (verified against JTR ed. 12/01/2021 on 2026-07-17) ---
+  - id: C017
+    category: Entitlements
+    claim: "IDT outside the normal commuting distance (150+ miles one way by DTOD) may rate actual-expense reimbursement for transportation, lodging, and meals limited to $500 per round trip — only for members meeting an eligibility criterion and when authorized by the Secretary concerned"
+    source: "JTR, par. 032304, pp. 3B-6 to 3B-7 (ed. 12/01/2021)"
+    source_ids: [SRC-JTR]
+    status: retired
+    preferred_claim_id: C041
+    review_triggers: [stale_source]
+    notes: "Superseded: the cap was raised to $750 for round trips ending on or after 27 Dec 2024 (MARADMIN 157/25, implementing the current JTR). Kept as tombstone; $500 still governs round trips that ended before 27 Dec 2024."
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C018
+    category: Distance Thresholds
+    claim: "POV use is automatically considered advantageous to the Government for official distances of 400 miles or less one way / 800 miles or less round trip (no cost comparison); greater distances require case-by-case AO approval, and using a POV instead of the authorized mode limits reimbursement to the constructed cost"
+    source: "JTR, par. 020210, Table 2-10, p. 2-20 (ed. 12/01/2021)"
+    source_ids: [SRC-JTR]
+    status: active
+    review_triggers: [stale_source]
+    topic: entitlements/pov-mileage.md
+
+  # --- ForO 3000-52.1 T3/TEEP (verified against scan during 2026-07-17 transcription pass) ---
+  - id: C019
+    category: T3 Program
+    claim: "T3 is the only method of reserving commercial transportation for reservists outside of DTS"
+    source: "ForO 3000-52.1, Ch 1, para 1, p. 1-1 (also Ch 6, para 1, p. 6-1)"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-overview.md
+
+  - id: C020
+    category: T3/TOP Timelines
+    claim: "D-65: group charter T3 request received by final approver (MARFORRES/MSC T3 Manager)"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(1), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C021
+    category: T3/TOP Timelines
+    claim: "D-60: group charter TOP request received by DMO"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(2), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C022
+    category: T3/TOP Timelines
+    claim: "D-50: OCONUS commercial air T3 request (individual/group) received by final approver"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(3), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C023
+    category: T3/TOP Timelines
+    claim: "D-45: OCONUS commercial air TOP request received by DMO with approved or authenticated orders"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(4), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C024
+    category: T3/TOP Timelines
+    claim: "D-35: CONUS commercial air/bus TOP request (individual and group) received by MARFORRES/MSC T3 Manager"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(5), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C025
+    category: T3/TOP Timelines
+    claim: "D-30: CONUS commercial air/bus TOP request (individual and group) received by DMO with authenticated orders"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(6), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C026
+    category: T3/TOP Timelines
+    claim: "D-10: traveler's GTCC IBA activated and a copy of authenticated orders attached to the TOP request, or DMO will cancel it; DMO ticketing begins"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(7)-(8), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C027
+    category: T3/TOP Timelines
+    claim: "D-5: DMO ticketing complete"
+    source: "ForO 3000-52.1, Ch 5, para 3.i(9), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C028
+    category: T3 Waivers
+    claim: "Late T3 adjudication: MSC G-3/5 endorsement required for all exceeded timelines up to D-16 of execution; MSC Chief of Staff endorsement required within 15 days of execution"
+    source: "ForO 3000-52.1, Ch 5, para 3.j(1)-(2), p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-waivers.md
+
+  - id: C029
+    category: T3 Waivers
+    claim: "Adjudication requires an email endorsement attached to the TEEP request summary page stating operational necessity, acceptance of all associated costs, and acceptance of risk from lack of carrier availability"
+    source: "ForO 3000-52.1, Ch 5, para 3.j, p. 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-waivers.md
+
+  - id: C030
+    category: Funding
+    claim: "TEEP funding lines: RPMC 1108 (TEEP ADOS 2732, Reserve Travel 2731 incl. AT/offsite-IDT travel), O&MMCR 1107 (Exercise Support, TAD, TOT, PEM), Joint Exercise Program 0100 (CTP, SIF), IRT, Active Component ADOS, and extended/split/additional AT"
+    source: "ForO 3000-52.1, Ch 3, pp. 3-1 to 3-5"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/teep-funding.md
+
+  - id: C031
+    category: Funding
+    claim: "Non-TEEP funding: OCO (1106 O&M) for mobilization, schools funding (1108 RPMC: PID RPT and CDT), other non-TEEP RPMC lines (funeral honors, boards, inspections, etc.), and O&MMCR 1107 for non-TEEP TOT/Small Package Program"
+    source: "ForO 3000-52.1, Ch 4, pp. 4-1 to 4-2"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/non-teep-funding.md
+
+  - id: C032
+    category: T3/TOP Timelines
+    claim: "DMO receipt deadlines: CONUS TOP 30 days (D-30) and OCONUS TOP 45 days (D-45) from the TOP ladder; TOT 30 days CONUS / 60 days OCONUS / 7 days Small Package Program"
+    source: "ForO 3000-52.1, Ch 5, para 3.i (TOP) and para 2.c (TOT), pp. 5-1 and 5-6"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  # --- Precedence ---
+  - id: C033
+    category: Precedence
+    claim: "A MARADMIN supersedes a standing order it contradicts; the JTR governs where more specific guidance is silent"
+    source: "Asserted in unit practice; no loaded regulation citation yet"
+    source_ids: []
+    status: needs_review
+    review_triggers: [source_ambiguous]
+    topic: reference/precedence-and-currency.md
+
+  # --- Added during ForO transcription pass (2026-07-17) ---
+  - id: C034
+    category: T3 Waivers
+    claim: "If orders are not approved by 15 days prior to departure, reservations are cancelled and the unit must resubmit with an MSC Chief of Staff waiver; any new submission within 15 days of departure also requires the CoS waiver"
+    source: "ForO 3000-52.1, Ch 5, para 3.f(5), p. 5-5"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C035
+    category: T3/TOP Timelines
+    claim: "TOT submission deadlines for receipt by DMO: 60 days prior for OCONUS, 30 days prior for CONUS, 7 days prior for Small Package Program shipments"
+    source: "ForO 3000-52.1, Ch 5, para 2.c, p. 5-1"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C036
+    category: T3/TOP Timelines
+    claim: "Reservations are made within 5-10 days of DMO receiving the TOP request; ticketing occurs within 10 days of travel against the CBA; the traveler's IBA must be activated when DTS/MROWS orders are submitted and NLT 10 days before travel"
+    source: "ForO 3000-52.1, Ch 5, para 3.g, p. 5-5"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-timelines.md
+
+  - id: C037
+    category: Claims/Liquidation
+    claim: "DD Form 1351-2 (travel claim) or DTS voucher must be submitted no later than 5 working days after completion of travel"
+    source: "ForO 3000-52.1, Ch 7, paras 2.c and 3.b, p. 7-2"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/mrows-dts-orders.md
+
+  - id: C038
+    category: Orders Selection
+    claim: "Standard AT is 14 days plus 1 travel day (15 total); extended AT up to 29 days with COMMARFORRES G-3/5 approval; split AT totals no more than 15 days, MSC G3 approved, split only once; additional AT is a second 15-day AT with both ATs not exceeding 30 days"
+    source: "ForO 3000-52.1, Ch 3, para 7, p. 3-5"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/teep-funding.md
+
+  - id: C039
+    category: Funding
+    claim: "Offsite IDT travel funds (PID 2) pay travel and per diem only when the offsite drill is in direct support of an approved TEEP funded event"
+    source: "ForO 3000-52.1, Ch 3, para 2.b(5), p. 3-2"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/teep-funding.md
+
+  - id: C040
+    category: T3 Program
+    claim: "Individuals are not authorized to make travel arrangements outside the servicing Travel Management Company (no local travel agencies, websites, or airport counters)"
+    source: "ForO 3000-52.1, Ch 5, para 3.d(1), p. 5-3"
+    source_ids: [SRC-FORO-3000-52-1]
+    status: active
+    topic: process/t3-overview.md
+
+  # --- MARADMIN 157/25 — IDT Travel Reimbursement (ingested 2026-07-18) ---
+  - id: C041
+    category: Entitlements
+    claim: "IDT Travel Reimbursement is limited to $750 per round trip for round trips with an end date on or after 27 December 2024 ($500 for round trips ending before that date), per the current JTR"
+    source: "MARADMIN 157/25, paras 1 and 5"
+    source_ids: [SRC-MARADMIN-157-25]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C042
+    category: Entitlements
+    claim: "IDT-R eligibility: critical staffing shortfalls within the SMCR, SMCR command-screened billets, DC M&RA Senior Leader/General Officer assignments, or IMA RSLB billets; assigned unit 150+ miles from the primary residence address in MCTFS (DTOD, PCS/TDY route type); and a matching BIC (PMOS/AMOS, one-up/down grade) or an RA-approved exception. No rank or MOS limitations"
+    source: "MARADMIN 157/25, para 3"
+    source_ids: [SRC-MARADMIN-157-25]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C043
+    category: Entitlements
+    claim: "IDT-R is limited to 11 round trips per Marine per fiscal year; MOS 75XX aviators assigned DIFOP to SMCR squadrons may claim up to 22 round trips per FY"
+    source: "MARADMIN 157/25, para 5.b"
+    source_ids: [SRC-MARADMIN-157-25]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C044
+    category: Entitlements
+    claim: "IDT Travel Reimbursement is separate from, and may not be combined with, the off-site IDT travel authorization in the JTR"
+    source: "MARADMIN 157/25, para 6.g"
+    source_ids: [SRC-MARADMIN-157-25]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C045
+    category: Claims/Liquidation
+    claim: "IDT-R claims are settled in DTS: MARFORRES publishes a monthly eligibility roster and adds eligible Marines (cross-org) to a restricted DTS list against the corresponding FY Line of Accounting; outstanding claims must be settled NLT 31 December of the same calendar year"
+    source: "MARADMIN 157/25, para 6.a"
+    source_ids: [SRC-MARADMIN-157-25]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md
+
+  - id: C046
+    category: Entitlements
+    claim: "Commanders are not authorized to deny an IDT-R reimbursement request that meets the program eligibility requirements"
+    source: "MARADMIN 157/25, para 6.h"
+    source_ids: [SRC-MARADMIN-157-25]
+    status: active
+    topic: entitlements/idt-travel-reimbursement.md

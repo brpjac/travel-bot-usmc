@@ -1,0 +1,98 @@
+# Source-document registry — the single registry for raw source material.
+# Replaces the old docs/metadata.json. Read by scripts/ingest.py (FAISS ingestion),
+# the lint skill (parity checks), and humans deciding which document to trust.
+#
+# Fields:
+#   source_id    stable SRC-* id, cited by wiki page frontmatter (source_ids: [...])
+#   title        full document title (becomes source_doc in FAISS chunk metadata)
+#   short_cite   the parenthetical prefix wiki pages use, e.g. (JTR, par. N, p. N)
+#   filename     basename in wiki/sources/raw/ (or raw/local/ if local_only)
+#   doc_type     standing_regulation | standing_order | maradmin | unit_reference
+#   as_of        publication/currency date of OUR COPY (not necessarily latest edition)
+#   distribution public | dow_community | unit_internal
+#   local_only   true = lives in gitignored raw/local/, never committed or bundled
+#   in_faiss     true = ingest.py chunks and embeds it; false = wiki pages/extracts
+#                are its searchable form (scanned docs, marked docs)
+#   scanned      true = image-only PDF, no text layer (pymupdf extraction yields nothing)
+
+sources:
+  - source_id: SRC-JTR
+    title: Joint Travel Regulations (JTR)
+    short_cite: JTR
+    filename: Joint Travel Regulations.pdf
+    doc_type: standing_regulation
+    as_of: 2021-12-01
+    distribution: public
+    local_only: false
+    in_faiss: true
+    scanned: false
+    notes: >
+      The JTR is updated monthly; this copy is Dec 2021 and should be refreshed.
+      Rates and some policies may be stale — see reference/precedence-and-currency.md.
+
+  - source_id: SRC-MCRAMM
+    title: MCO 1001R.1K (MCRAMM)
+    short_cite: MCO 1001R.1K
+    filename: mco 1001r.1k.pdf
+    doc_type: standing_order
+    as_of: 2009-03-22
+    distribution: public
+    local_only: false
+    in_faiss: true
+    scanned: false
+    notes: >
+      Marine Corps Reserve Administrative Management Manual. Note MCO 1001R.1L is
+      referenced by ForO 3000-52.1 (2019) — our copy is one revision behind.
+
+  - source_id: SRC-FORO-3000-52-1
+    title: ForO 3000-52.1 (MARFORRES TEEP/T3 SOP)
+    short_cite: ForO 3000-52.1
+    filename: ForO 3000-52.1 T3 SOP.pdf
+    doc_type: standing_order
+    as_of: 2019-04-24
+    distribution: public          # Distribution Statement A on the signature page
+    local_only: false
+    in_faiss: false               # copier scan, no text layer — sources/foro-3000-52-1/ transcriptions are the searchable form
+    scanned: true
+
+  - source_id: SRC-MIU-MATRIX
+    title: MIU Orders-Type Matrix
+    short_cite: MIU Orders-Type Matrix
+    filename: MIU Orders-Type Matrix.pdf
+    doc_type: unit_reference
+    as_of: 2026-03-06
+    distribution: dow_community   # unit-restricted distribution marking — never commit or bundle
+    local_only: true              # lives in raw/local/ with its structured .txt twin
+    in_faiss: false               # mechanics distilled into wiki topic pages; verbatim doc stays out of git
+    scanned: false
+    notes: >
+      Both the PDF and orders-type-matrix.txt live in raw/local/. Wiki topic pages
+      carry the procedural mechanics; the marked document itself is never committed.
+
+  - source_id: SRC-MARADMIN-157-25
+    title: MARADMIN 157/25 (IDT Travel Reimbursement Update)
+    short_cite: MARADMIN 157/25
+    filename: MARADMIN 157-25 IDT Travel Reimbursement.pdf
+    doc_type: maradmin
+    as_of: 2025-03-24
+    distribution: public          # MARADMINs are publicly released on marines.mil
+    local_only: false
+    in_faiss: false               # fully transcribed in sources/maradmin-157-25/message.md
+    scanned: false
+    notes: >
+      Raises the IDT travel reimbursement cap from $500 to $750 per round trip
+      for round trips ending on or after 27 Dec 2024 (implementing the current
+      JTR); cancels MARADMIN 193/22. The PDF is an archival capture generated
+      from the message text at marines.mil Article 4133200 (captured
+      2026-07-18); the wiki extract is the searchable form.
+
+  - source_id: SRC-T3-DASHBOARD
+    title: FHG T3 Timeliness Dashboard (7 Jul 2026)
+    short_cite: FHG T3 Dashboard
+    filename: T3 Lateness Report (002).png
+    doc_type: unit_reference
+    as_of: 2026-07-07
+    distribution: dow_community
+    local_only: true
+    in_faiss: false               # motivation/context only — never cited in wiki pages
+    scanned: false
