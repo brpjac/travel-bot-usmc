@@ -61,3 +61,10 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           MIU_ROUTER_MODEL: ${{ inputs.router_model }}
           MIU_ANSWER_MODEL: ${{ inputs.answer_model }}
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: evals/results-*.md
+          if-no-files-found: ignore
