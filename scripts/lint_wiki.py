@@ -116,8 +116,11 @@ def check_source_parity(ctx) -> list[Finding]:
     sources = ctx["sources"]
     src_ids = {s["source_id"] for s in sources}
     for s in sources:
-        sub = "local/" if s.get("local_only") else ""
-        if not (WIKI / "sources/raw" / (sub + s["filename"])).exists():
+        if s.get("local_only"):
+            # Gitignored by design — absent in CI checkouts and that's correct.
+            # (The distribution guard separately asserts they're never tracked.)
+            continue
+        if not (WIKI / "sources/raw" / s["filename"]).exists():
             findings.append(Finding("source-parity", "FAIL", f"{s['source_id']}: file missing ({s['filename']})"))
     registered = {s["filename"] for s in sources if not s.get("local_only")}
     for f in (WIKI / "sources/raw").iterdir():

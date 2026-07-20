@@ -41,6 +41,7 @@ class QuestionResult:
     pages: list[str] = field(default_factory=list)
     cited: list[str] = field(default_factory=list)
     answer: str = ""
+    skipped: bool = False  # excluded from the pass-rate denominator
 
 
 def load_questions(path: Path = QUESTIONS_FILE) -> list[dict]:
@@ -49,6 +50,11 @@ def load_questions(path: Path = QUESTIONS_FILE) -> list[dict]:
 
 def grade(q: dict, result: dict) -> QuestionResult:
     """Pure grading function — unit-testable, no I/O."""
+    # A question that exists to exercise the FAISS fallback cannot be graded
+    # when FAISS isn't loaded (CI runs --no-faiss) — skip, don't fail.
+    if q.get("expect_faiss") and not result.get("faiss_available", True):
+        return QuestionResult(qid=q["id"], passed=True, skipped=True,
+                              failures=["SKIPPED: requires FAISS, not loaded"])
     answer = result["answer"]
     low = answer.lower()
     cited = result.get("claim_ids", [])
@@ -108,13 +114,15 @@ def run_one(client, vectorstore, catalog, claims, claims_index, q, today) -> dic
 
 
 def render_report(results: list[QuestionResult], meta: dict) -> str:
-    n = len(results)
-    n_pass = sum(r.passed for r in results)
-    routed = [r for r in results if r.router_hit is not None]
+    graded = [r for r in results if not r.skipped]
+    n = len(graded) or 1
+    n_pass = sum(r.passed for r in graded)
+    n_skip = len(results) - len(graded)
+    routed = [r for r in graded if r.router_hit is not None]
     lines = [
         f"# Eval results — {meta['date']}",
         "",
-        f"Pass: **{n_pass}/{n}** ({n_pass / n:.0%}) · router accuracy: "
+        f"Pass: **{n_pass}/{len(graded)}** ({n_pass / n:.0%}, {n_skip} skipped) · router accuracy: "
         f"{sum(r.router_hit for r in routed)}/{len(routed)} · "
         f"answer model: {meta['answer_model']} · router model: {meta['router_model']} · "
         f"pinned today: {meta['today']}",
@@ -174,17 +182,21 @@ def main() -> int:
 
     results: list[QuestionResult] = []
     for i, q in enumerate(questions):
-        for attempt in (1, 2):
+        raw = None
+        for attempt, backoff in ((1, 30), (2, 60), (3, 90), (4, 0)):
             try:
                 raw = run_one(client, vectorstore, catalog, claims, claims_index, q, args.today)
                 break
             except Exception as e:
-                if attempt == 1 and ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)):
-                    print(f"  {q['id']}: rate-limited, retrying in 30s...")
-                    time.sleep(30)
+                rate_limited = "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)
+                if rate_limited and backoff:
+                    print(f"  {q['id']}: rate-limited (attempt {attempt}), backing off {backoff}s...")
+                    time.sleep(backoff)
                 else:
-                    raw = {"answer": f"(pipeline error: {e})", "claim_ids": [], "pages": [],
-                           "faiss_citations": [], "faiss_used": False, "faiss_available": True}
+                    raw = {"answer": f"(PIPELINE ERROR — not a content failure: {e})",
+                           "claim_ids": [], "pages": [],
+                           "faiss_citations": [], "faiss_used": False,
+                           "faiss_available": vectorstore is not None}
                     break
         r = grade(q, raw)
         results.append(r)
@@ -192,8 +204,9 @@ def main() -> int:
         if i < len(questions) - 1:
             time.sleep(args.sleep)
 
-    n_pass = sum(r.passed for r in results)
-    rate = n_pass / len(results) if results else 0.0
+    graded = [r for r in results if not r.skipped]
+    n_pass = sum(r.passed for r in graded)
+    rate = n_pass / len(graded) if graded else 0.0
     router_model = bot.ROUTER_MODEL
     if getattr(bot, "_router_model_broken", False):
         router_model = f"{bot.ANSWER_MODEL} (FALLBACK — {bot.ROUTER_MODEL} unavailable on this key)"
@@ -202,7 +215,8 @@ def main() -> int:
             "router_model": router_model, "answer_model": bot.ANSWER_MODEL}
     out = Path(args.out) if args.out else REPO / "evals" / f"results-{meta['date']}.md"
     out.write_text(render_report(results, meta), encoding="utf-8")
-    print(f"\npass rate: {n_pass}/{len(results)} ({rate:.0%}) — report: {out.relative_to(REPO)}")
+    n_skip = len(results) - len(graded)
+    print(f"\npass rate: {n_pass}/{len(graded)} ({rate:.0%}, {n_skip} skipped) — report: {out.relative_to(REPO)}")
     return 0 if rate >= args.min_pass else 1
 
 

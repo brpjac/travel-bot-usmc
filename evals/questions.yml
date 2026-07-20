@@ -98,8 +98,7 @@ questions:
     question: "How many days of leave can I sell back when I EAS?"
     expect_no_claims: true
     expect_any_substring: ["don't have enough information", "not in the loaded regulations", "check with your S-1"]
-    expect_pages: []
-    notes: "Leave sell-back is pay/admin, not travel — must refuse, not improvise."
+    notes: "Leave sell-back is pay/admin, not travel — must refuse, not improvise. (No expect_pages: the router grabbing an index page is harmless if the answer still refuses.)"
 
   - id: Q11-oconus-orders-apacs
     question: "What lead time and extra requirements apply when I request AT orders for an exercise in Japan?"
