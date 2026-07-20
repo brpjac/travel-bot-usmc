@@ -31,8 +31,10 @@ WIKI_DIR = REPO_ROOT / "wiki"
 # models without a code push. Lesson learned: Google deprecates model names
 # out from under keys (gemini-2.5-flash-lite 404'd for new users, Jul 2026) —
 # route() falls back to ANSWER_MODEL if the router model disappears.
-ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL", "gemini-3.1-flash-lite")
-ANSWER_MODEL = os.environ.get("MIU_ANSWER_MODEL", "gemini-2.5-flash")
+# `or` (not a get() default) so an empty env var — e.g. a blank CI input —
+# still falls through to the repo default.
+ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL") or "gemini-3.1-flash-lite"
+ANSWER_MODEL = os.environ.get("MIU_ANSWER_MODEL") or "gemini-2.5-flash"
 
 _router_model_broken = False  # latched when ROUTER_MODEL 404s; process-lifetime
 

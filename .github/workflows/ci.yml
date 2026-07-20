@@ -4,6 +4,15 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      router_model:
+        description: "Router model override (blank = repo default)"
+        required: false
+        default: ""
+      answer_model:
+        description: "Answer model override (blank = repo default)"
+        required: false
+        default: ""
 
 jobs:
   wiki:
@@ -50,3 +59,5 @@ jobs:
         run: python scripts/eval.py --no-faiss --min-pass 0.8
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          MIU_ROUTER_MODEL: ${{ inputs.router_model }}
+          MIU_ANSWER_MODEL: ${{ inputs.answer_model }}

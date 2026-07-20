@@ -194,8 +194,12 @@ def main() -> int:
 
     n_pass = sum(r.passed for r in results)
     rate = n_pass / len(results) if results else 0.0
+    router_model = bot.ROUTER_MODEL
+    if getattr(bot, "_router_model_broken", False):
+        router_model = f"{bot.ANSWER_MODEL} (FALLBACK — {bot.ROUTER_MODEL} unavailable on this key)"
+        print(f"\nWARNING: router model {bot.ROUTER_MODEL} 404'd; ran on the answer-model fallback")
     meta = {"date": date.today().isoformat(), "today": args.today,
-            "router_model": bot.ROUTER_MODEL, "answer_model": bot.ANSWER_MODEL}
+            "router_model": router_model, "answer_model": bot.ANSWER_MODEL}
     out = Path(args.out) if args.out else REPO / "evals" / f"results-{meta['date']}.md"
     out.write_text(render_report(results, meta), encoding="utf-8")
     print(f"\npass rate: {n_pass}/{len(results)} ({rate:.0%}) — report: {out.relative_to(REPO)}")
