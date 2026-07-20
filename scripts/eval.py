@@ -181,7 +181,13 @@ def main() -> int:
         questions = questions[: args.limit]
 
     results: list[QuestionResult] = []
+    consecutive_errors = 0
     for i, q in enumerate(questions):
+        if consecutive_errors >= 3:
+            print(f"\nABORT: 3 consecutive pipeline errors — the key has likely hit a "
+                  f"daily/rolling quota that backoff cannot outwait. "
+                  f"{len(questions) - i} questions not attempted. Re-run after quota reset.")
+            break
         raw = None
         for attempt, backoff in ((1, 30), (2, 60), (3, 90), (4, 0)):
             try:
@@ -200,6 +206,7 @@ def main() -> int:
                     break
         r = grade(q, raw)
         results.append(r)
+        consecutive_errors = consecutive_errors + 1 if "PIPELINE ERROR" in r.answer else 0
         print(f"{r.qid}: {'PASS' if r.passed else 'FAIL — ' + '; '.join(r.failures)}")
         if i < len(questions) - 1:
             time.sleep(args.sleep)
