@@ -25,10 +25,16 @@ from pydantic import BaseModel
 REPO_ROOT = Path(__file__).parent
 WIKI_DIR = REPO_ROOT / "wiki"
 
-# Router runs on flash-lite (separate free-tier quota → doubles daily question
-# capacity); the answer stays on flash. Override via env for paid tiers/testing.
-ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL", "gemini-2.5-flash-lite")
+# Router runs on a lite model (separate free-tier quota → doubles daily
+# question capacity); the answer stays on flash. Overridable via env, and
+# app.py also wires Streamlit secrets to these so the deployed app can swap
+# models without a code push. Lesson learned: Google deprecates model names
+# out from under keys (gemini-2.5-flash-lite 404'd for new users, Jul 2026) —
+# route() falls back to ANSWER_MODEL if the router model disappears.
+ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL", "gemini-3.1-flash-lite")
 ANSWER_MODEL = os.environ.get("MIU_ANSWER_MODEL", "gemini-2.5-flash")
+
+_router_model_broken = False  # latched when ROUTER_MODEL 404s; process-lifetime
 
 MAX_PAGES = 4
 FAISS_K = 6
@@ -190,22 +196,30 @@ def _usage(resp) -> dict:
 
 
 def route(client, catalog: str, history: str, question: str, today: str) -> tuple[RouterDecision, dict]:
+    global _router_model_broken
     prompt = ROUTER_PROMPT.format(
         catalog=catalog,
         history=(history + "\n") if history else "",
         question=question,
         today=today,
     )
-    resp = client.models.generate_content(
-        model=ROUTER_MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0,
-            response_mime_type="application/json",
-            response_schema=RouterDecision,
-            thinking_config=types.ThinkingConfig(thinking_budget=0),
-        ),
+    config = types.GenerateContentConfig(
+        temperature=0,
+        response_mime_type="application/json",
+        response_schema=RouterDecision,
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
     )
+    model = ANSWER_MODEL if _router_model_broken else ROUTER_MODEL
+    try:
+        resp = client.models.generate_content(model=model, contents=prompt, config=config)
+    except Exception as e:
+        # Router model deprecated/unavailable on this key → degrade to the
+        # answer model (halves daily capacity, keeps the bot alive) and latch.
+        if not _router_model_broken and ("NOT_FOUND" in str(e) or "404" in str(e)):
+            _router_model_broken = True
+            resp = client.models.generate_content(model=ANSWER_MODEL, contents=prompt, config=config)
+        else:
+            raise
     decision = resp.parsed or RouterDecision(pages=[], needs_faiss=True, faiss_query=question)
     return decision, _usage(resp)
 

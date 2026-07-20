@@ -24,9 +24,11 @@ Marine → Streamlit (app.py)
   (`wiki/sources/`), raw PDFs (`wiki/sources/raw/`). Start at
   [wiki/CLAUDE.md](wiki/CLAUDE.md).
 - **LLM:** Gemini free tier via `google-genai` SDK — router on
-  `gemini-2.5-flash-lite` (separate quota), answer on `gemini-2.5-flash`
+  `gemini-3.1-flash-lite` (separate quota), answer on `gemini-2.5-flash`
   (~250 questions/day; a courtesy in-app counter caps at 200). Override via
-  `MIU_ROUTER_MODEL` / `MIU_ANSWER_MODEL`.
+  `MIU_ROUTER_MODEL` / `MIU_ANSWER_MODEL` env vars or Streamlit secrets of
+  the same names. If the router model 404s (Google deprecates model names —
+  it happened Jul 2026), `route()` falls back to the answer model and latches.
 - **FAISS fallback:** all-MiniLM-L6-v2 local embeddings over the raw JTR +
   MCRAMM only (LangChain kept solely to load the index format).
 - **Frontend:** Streamlit; **hosting:** Streamlit Community Cloud.

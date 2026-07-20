@@ -243,6 +243,14 @@ def main():
         st.stop()
 
     client = genai.Client(api_key=api_key)
+
+    # Allow model swaps from the Streamlit Cloud secrets dashboard (no redeploy).
+    try:
+        bot.ROUTER_MODEL = st.secrets.get("MIU_ROUTER_MODEL", bot.ROUTER_MODEL)
+        bot.ANSWER_MODEL = st.secrets.get("MIU_ANSWER_MODEL", bot.ANSWER_MODEL)
+    except Exception:
+        pass
+
     catalog, claims, claims_index = load_wiki_assets()
 
     render_trip_planner(claims_index)
