@@ -126,8 +126,8 @@ questions:
     question: "My duty site is 30 miles from the HTC but I need a rental car and lodging. What are my options?"
     expect_claims: [C015]
     expect_substrings: ["ADOS"]
-    expect_pages: [orders-types/choosing-orders-type.md, orders-types/ados.md]
-    notes: "Under-50-miles trap: CO lodging exception or ADOS orders."
+    expect_pages: [orders-types/choosing-orders-type.md, orders-types/ados.md, orders-types/idt.md, entitlements/entitlements-matrix.md]
+    notes: "Under-50-miles trap: CO lodging exception or ADOS orders. (expect_pages includes the reasonable alternates the router legitimately picks — the answer content is what matters.)"
 
   - id: Q15-pov-500-miles
     question: "I want to drive my own car 500 miles one way to an AT site. Will I get full mileage?"

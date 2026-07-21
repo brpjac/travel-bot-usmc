@@ -25,15 +25,17 @@ from pydantic import BaseModel
 REPO_ROOT = Path(__file__).parent
 WIKI_DIR = REPO_ROOT / "wiki"
 
-# Router runs on a lite model (separate free-tier quota → doubles daily
-# question capacity); the answer stays on flash. Overridable via env, and
-# app.py also wires Streamlit secrets to these so the deployed app can swap
-# models without a code push. Lesson learned: Google deprecates model names
-# out from under keys (gemini-2.5-flash-lite 404'd for new users, Jul 2026) —
-# route() falls back to ANSWER_MODEL if the router model disappears.
+# Both calls run on the same model. Two lite-router attempts failed in
+# production: gemini-2.5-flash-lite 404'd (deprecated for new keys, Jul 2026)
+# and gemini-3.1-flash-lite has a 20-request/day free tier that capped the
+# whole bot (verified via quotaId GenerateRequestsPerDayPerProjectPerModel-
+# FreeTier, value 20, in eval runs). Split models again only after verifying
+# the router model's free-tier RPD on this key. Overridable via env, and
+# app.py wires Streamlit secrets to these for no-redeploy swaps. route()
+# falls back to ANSWER_MODEL if the router model 404s.
 # `or` (not a get() default) so an empty env var — e.g. a blank CI input —
 # still falls through to the repo default.
-ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL") or "gemini-3.1-flash-lite"
+ROUTER_MODEL = os.environ.get("MIU_ROUTER_MODEL") or "gemini-2.5-flash"
 ANSWER_MODEL = os.environ.get("MIU_ANSWER_MODEL") or "gemini-2.5-flash"
 
 _router_model_broken = False  # latched when ROUTER_MODEL 404s; process-lifetime
