@@ -194,9 +194,10 @@ def main() -> int:
                 raw = run_one(client, vectorstore, catalog, claims, claims_index, q, args.today)
                 break
             except Exception as e:
-                rate_limited = "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)
-                if rate_limited and backoff:
-                    print(f"  {q['id']}: rate-limited (attempt {attempt}), backing off {backoff}s...")
+                retryable = ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)
+                             or "503" in str(e) or "UNAVAILABLE" in str(e))
+                if retryable and backoff:
+                    print(f"  {q['id']}: rate-limited/shed (attempt {attempt}), backing off {backoff}s...")
                     time.sleep(backoff)
                 else:
                     raw = {"answer": f"(PIPELINE ERROR — not a content failure: {e})",

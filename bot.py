@@ -191,6 +191,20 @@ def faiss_search(vectorstore, query: str, k: int = FAISS_K) -> tuple[str, list[s
 
 # --- LLM calls --------------------------------------------------------------
 
+def _generate(client, model: str, contents: str, config) -> object:
+    """generate_content with a single short retry on 503 load-shedding
+    ('high demand ... usually temporary') so one shed request doesn't become
+    a user-facing error."""
+    import time
+    try:
+        return client.models.generate_content(model=model, contents=contents, config=config)
+    except Exception as e:
+        if "503" in str(e) or "UNAVAILABLE" in str(e):
+            time.sleep(2)
+            return client.models.generate_content(model=model, contents=contents, config=config)
+        raise
+
+
 def _usage(resp) -> dict:
     u = resp.usage_metadata
     return {
@@ -215,13 +229,13 @@ def route(client, catalog: str, history: str, question: str, today: str) -> tupl
     )
     model = ANSWER_MODEL if _router_model_broken else ROUTER_MODEL
     try:
-        resp = client.models.generate_content(model=model, contents=prompt, config=config)
+        resp = _generate(client, model, prompt, config)
     except Exception as e:
         # Router model deprecated/unavailable on this key → degrade to the
         # answer model (halves daily capacity, keeps the bot alive) and latch.
         if not _router_model_broken and ("NOT_FOUND" in str(e) or "404" in str(e)):
             _router_model_broken = True
-            resp = client.models.generate_content(model=ANSWER_MODEL, contents=prompt, config=config)
+            resp = _generate(client, ANSWER_MODEL, prompt, config)
         else:
             raise
     decision = resp.parsed or RouterDecision(pages=[], needs_faiss=True, faiss_query=question)
@@ -241,11 +255,8 @@ def answer(client, claims: str, pages_text: str, faiss_text: str, history: str,
         question=question,
         today=today,
     )
-    resp = client.models.generate_content(
-        model=ANSWER_MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(temperature=0.1),
-    )
+    resp = _generate(client, ANSWER_MODEL, prompt,
+                     types.GenerateContentConfig(temperature=0.1))
     return resp.text or "", _usage(resp)
 
 
