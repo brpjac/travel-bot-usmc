@@ -260,15 +260,24 @@ def answer(client, claims: str, pages_text: str, faiss_text: str, history: str,
     return resp.text or "", _usage(resp)
 
 
+# A trailer line the model may have decorated: "CLAIMS: C041", "**CLAIMS:**
+# C041", "- _Claims:_ none". Leading markdown/bullet chars are stripped before
+# matching — models reliably emit the token but not the plain formatting.
+_TRAILER_RE = re.compile(r"^[\s>*_\-#`]*claims\s*[:\-]", re.I)
+
+
 def split_claims_trailer(text: str) -> tuple[str, list[str]]:
     """Split the machine trailer ('CLAIMS: C041, C044' / 'CLAIMS: none') off an
     answer. Returns (clean display text, claim id list). Tolerates a missing
-    trailer and stray inline IDs (belt-and-suspenders sweep of the whole text)."""
+    trailer, markdown decoration around it, and stray inline IDs."""
     ids: list[str] = []
     lines = text.rstrip().splitlines()
     body = text.rstrip()
-    for i in range(len(lines) - 1, max(len(lines) - 3, -1), -1):
-        if lines[i].strip().upper().startswith("CLAIMS:"):
+    # Scan the last few non-blank lines: a decorated trailer can be preceded
+    # by a blank line, and models sometimes append a stray blank/rule after it.
+    candidates = [i for i in range(len(lines) - 1, -1, -1) if lines[i].strip()][:3]
+    for i in candidates:
+        if _TRAILER_RE.match(lines[i]):
             ids = CLAIM_ID_RE.findall(lines[i])
             body = "\n".join(lines[:i]).rstrip()
             break

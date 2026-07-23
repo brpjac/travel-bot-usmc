@@ -43,7 +43,7 @@ jobs:
       - name: Imports stay light (no torch, no model calls)
         run: python -c "import bot, planner, app"
       - name: Planner tests
-        run: python -m pytest tests/test_planner.py -q
+        run: python -m pytest tests/ -q
 
   # Manual answer-quality run: needs the GOOGLE_API_KEY repo secret.
   eval:
