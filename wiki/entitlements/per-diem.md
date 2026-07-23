@@ -5,7 +5,7 @@ type: topic
 access: public_release
 status: active
 last_reviewed: 2026-07-17
-claim_ids: [C001, C013]
+claim_ids: [C001, C013, C041]
 source_ids: [SRC-JTR]
 related:
   - entitlements-matrix.md
@@ -51,6 +51,6 @@ conditions don't strip it.
 
 ## IDT exception
 
-The narrow 150-mile/$500 mechanism reimburses actual lodging and meal costs up
+The narrow 150-mile/$750 mechanism [C041] reimburses actual lodging and meal costs up
 to locality caps — that's AEA-style reimbursement, not per diem. See
 [idt-travel-reimbursement.md](idt-travel-reimbursement.md).

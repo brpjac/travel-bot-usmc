@@ -151,7 +151,7 @@ claims:
   - id: C018
     category: Distance Thresholds
     claim: "POV use is automatically considered advantageous to the Government for official distances of 400 miles or less one way / 800 miles or less round trip (no cost comparison); greater distances require case-by-case AO approval, and using a POV instead of the authorized mode limits reimbursement to the constructed cost"
-    source: "JTR, par. 020210, Table 2-10, p. 2-23 (ed. 07/01/2026; re-verified unchanged from ed. 12/01/2021)"
+    source: "JTR, par. 020210, Table 2-10 rows 1-2, p. 2-23 (ed. 07/01/2026). NOTE: rows 1-2 (the 400/800 rule) are unchanged from ed. 12/01/2021, but row 3 and para F changed materially in 2026 — tolls are now reimbursable and the constructed cost includes taxi/parking/baggage; see sources/jtr/par-020210-pov-use.md"
     source_ids: [SRC-JTR]
     status: active
     topic: entitlements/pov-mileage.md

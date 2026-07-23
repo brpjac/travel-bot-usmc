@@ -35,7 +35,7 @@ Status legend: **active** = verified against the cited source · **needs_review*
 | ID | Claim | Status | Topic |
 |----|-------|--------|-------|
 | C017 | IDT 150+ mi (DTOD): actual expenses up to $500/round trip (ed. 12/01/2021) — **superseded by C041** ($750 for round trips ending on/after 27 Dec 2024) | retired | entitlements/idt-travel-reimbursement.md |
-| C018 | POV auto-advantageous ≤400 mi one-way / ≤800 mi RT; beyond is AO case-by-case; POV-instead-of-authorized-mode limited to constructed cost (par. 020210, Table 2-10, p. 2-23, ed. 07/01/2026) | active | entitlements/pov-mileage.md |
+| C018 | POV auto-advantageous ≤400 mi one-way / ≤800 mi RT; beyond is AO case-by-case; POV-instead-of-authorized-mode limited to constructed cost (par. 020210, Table 2-10 rows 1-2, p. 2-23, ed. 07/01/2026 — row 3/para F changed in 2026: tolls now reimbursable, constructed cost includes taxi/parking/baggage) | active | entitlements/pov-mileage.md |
 
 ## IDT Travel Reimbursement (source: MARADMIN 157/25, 24 Mar 2025)
 

@@ -31,14 +31,25 @@ Rules for using your own vehicle on travel-bearing orders. Source: JTR par.
 ## If you drive instead of the authorized mode
 
 Reimbursement is limited to the **constructed cost** of the authorized
-transportation: ticket price plus TMC fee, and you get the lesser of that or
-your mileage. Parking and tolls incurred on the drive are NOT reimbursed in
-that scenario. (JTR, par. 020210, Table 2-10 row 3 and para F, pp. 2-23 to 2-24.)
+transportation, and you get the lesser of that or your mileage. You are
+allowed TDY mileage for the official distance **plus related travel expenses
+such as tolls**, capped at that constructed cost (JTR, par. 020210, Table 2-10
+row 3, p. 2-23).
+
+The comparison goes to your AO on a **Constructed Travel Worksheet** (the DTMO
+CTW or a locally-approved equivalent). The constructed cost is not just the
+ticket: it includes the TMC fee plus related costs such as taxi and TNC fares,
+terminal mileage, baggage fees, ferry fees, parking, and a rental car where
+authorized (JTR, par. 020210 para F, p. 2-25).
+
+> Both of these rules **reversed** after the Dec 2021 edition, which said
+> tolls and parking were not reimbursable and excluded taxi fare from the
+> comparison. If you are working from older guidance or a pre-2026 memory,
+> re-check it.
 
 ## Other facts worth knowing
 
-- Nobody can order you to drive your POV, and a passenger in a POV gets per
-  diem but no transportation reimbursement (JTR, par. 020210, p. 2-22).
+- Nobody can order you to drive your POV (JTR, par. 020210, p. 2-22).
 - Mileage rates differ by vehicle type (auto, motorcycle, airplane) and change
   periodically — look up the current TDY mileage rate on the DTMO site rather
   than trusting a stale number.
