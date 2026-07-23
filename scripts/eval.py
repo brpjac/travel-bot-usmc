@@ -92,7 +92,15 @@ def grade(q: dict, result: dict) -> QuestionResult:
         expected = q["expect_pages"]
         router_hit = (not expected and not pages) or bool(set(expected) & set(pages))
         if not router_hit:
-            failures.append(f"router missed pages (wanted any of {expected}, got {pages})")
+            detail = f"router missed pages (wanted any of {expected}, got {pages}"
+            dropped = result.get("router_dropped") or []
+            requested = result.get("router_requested")
+            if dropped:
+                detail += f"; model asked for {requested} but these did not resolve: {dropped}"
+            elif requested == []:
+                detail += "; model returned an EMPTY page list"
+            detail += ")"
+            failures.append(detail)
 
     faiss_ok = None
     if "expect_faiss" in q and result.get("faiss_available", True):

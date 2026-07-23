@@ -36,11 +36,14 @@ def variants():
     """(name, config-kwargs, prompt-tweak) combinations to discriminate causes."""
     base = dict(temperature=0, response_mime_type="application/json",
                 response_schema=bot.RouterDecision)
+    # temperature=1.0 is Google's documented recommendation for Gemini 3.x;
+    # 0 is reported to degrade reasoning on those models.
+    warm = {**base, "temperature": 1.0}
     return [
-        ("thinking_budget=0 (current)", {**base, "thinking_config": types.ThinkingConfig(thinking_budget=0)}, None),
-        ("no thinking_config", dict(base), None),
-        ("thinking_budget=-1 (dynamic)", {**base, "thinking_config": types.ThinkingConfig(thinking_budget=-1)}, None),
-        ("no thinking + 'choose 2-4' wording", dict(base),
+        ("temp=0 + thinking_budget=0 (current prod)", {**base, "thinking_config": types.ThinkingConfig(thinking_budget=0)}, None),
+        ("temp=0, no thinking_config", dict(base), None),
+        ("temp=1.0, no thinking_config", dict(warm), None),
+        ("temp=1.0 + 'choose 2-4' wording", dict(warm),
          lambda p: p.replace("Choose 0-4 page paths", "Choose 2-4 page paths")
                     .replace("If nothing in the catalog fits, return an empty pages list.",
                              "Only return an empty pages list if the question is entirely unrelated to travel.")),
@@ -75,12 +78,34 @@ def main() -> int:
                     config=types.GenerateContentConfig(**cfg))
                 calls += 1
                 d = resp.parsed
-                pages = list(d.pages) if d else []
-                hit = "HIT " if set(pages) & EXPECTED else "MISS"
-                print(f"  {hit} {name:38} pages={pages} needs_faiss={d.needs_faiss if d else '?'}")
+                raw = (resp.text or "").strip().replace("\n", " ")
+
+                # "pages == []" is ambiguous: distinguish the three causes.
+                if d is None:
+                    verdict = "PARSE-FAIL (resp.parsed is None)"
+                    pages, resolved, dropped = [], [], []
+                else:
+                    pages = list(d.pages)
+                    _, resolved = bot.read_pages(pages)
+                    dropped = [p for p in pages if p not in resolved]
+                    if not pages:
+                        verdict = "MODEL-RETURNED-EMPTY"
+                    elif dropped and not resolved:
+                        verdict = "PATHS-ALL-DROPPED (format mismatch)"
+                    elif set(resolved) & EXPECTED:
+                        verdict = "HIT"
+                    else:
+                        verdict = "WRONG-PAGES"
+
+                print(f"  {verdict:34} {name}")
+                print(f"      returned={pages}")
+                if dropped:
+                    print(f"      DROPPED by read_pages (unresolvable): {dropped}")
+                if d is None:
+                    print(f"      raw text: {raw[:160]}")
             except Exception as e:
                 calls += 1
-                print(f"  ERR  {name:38} {str(e)[:110]}")
+                print(f"  ERROR                              {name}: {str(e)[:110]}")
         print()
     print(f"total API requests used: {calls}")
     return 0

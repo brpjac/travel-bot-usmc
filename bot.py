@@ -313,6 +313,11 @@ def ask(client, vectorstore, catalog: str, claims: str, claims_index: dict,
         "answer": text,
         "claim_ids": claim_ids,
         "pages": loaded_pages,
+        # Diagnostics: an empty `pages` is otherwise ambiguous between "the
+        # model chose nothing", "structured output failed to parse", and
+        # "the paths it named didn't resolve". Keep them distinguishable.
+        "router_requested": list(decision.pages),
+        "router_dropped": [p for p in decision.pages if p not in loaded_pages],
         "faiss_citations": faiss_citations,
         "claim_citations": cited_claims(claim_ids, claims_index),
         "usage": [
