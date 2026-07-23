@@ -122,6 +122,9 @@ def build_plan(trip: TripInputs, today: date, rules: dict, claims_index: dict) -
         else:
             escalation = "Departure date is in the past — check your inputs."
 
+    if trip.return_date and trip.return_date < trip.departure:
+        notes.append("CHECK YOUR DATES: the return date is before the departure date, "
+                     "so the voucher deadline below is not meaningful.")
     if trip.party == "charter":
         notes.append("Charter deadlines apply regardless of destination (the ForO has no CONUS/OCONUS charter split).")
     if not trip.commercial_air:
@@ -135,6 +138,30 @@ def build_plan(trip: TripInputs, today: date, rules: dict, claims_index: dict) -
 def _esc(text: str) -> str:
     return (text.replace("\\", "\\\\").replace(";", r"\;")
                 .replace(",", r"\,").replace("\n", r"\n"))
+
+
+def _fold(line: str) -> str:
+    """Fold a content line to <=75 octets per RFC 5545 §3.1.
+
+    Continuation lines start with a single space. Folds on octet boundaries
+    without splitting a multi-byte UTF-8 character (labels contain non-ASCII).
+    Strict parsers reject over-long lines; lenient ones accept either form.
+    """
+    raw = line.encode("utf-8")
+    if len(raw) <= 75:
+        return line
+    out, first = [], True
+    while raw:
+        limit = 75 if first else 74  # continuation lines carry a leading space
+        chunk = raw[:limit]
+        # Don't split inside a UTF-8 sequence: back off to a lead byte.
+        while len(chunk) > 1 and (raw[len(chunk):len(chunk) + 1] and
+                                  (raw[len(chunk)] & 0xC0) == 0x80):
+            chunk = chunk[:-1]
+        out.append(chunk.decode("utf-8") if first else " " + chunk.decode("utf-8"))
+        raw = raw[len(chunk):]
+        first = False
+    return "\r\n".join(out)
 
 
 def to_ics(plan: Plan, trip: TripInputs) -> bytes:
@@ -164,4 +191,4 @@ def to_ics(plan: Plan, trip: TripInputs) -> bytes:
             "END:VEVENT",
         ]
     lines.append("END:VCALENDAR")
-    return ("\r\n".join(lines) + "\r\n").encode("utf-8")
+    return ("\r\n".join(_fold(l) for l in lines) + "\r\n").encode("utf-8")

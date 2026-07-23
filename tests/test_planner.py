@@ -92,6 +92,32 @@ def test_ics_structure():
     assert ics.count("BEGIN:VEVENT") == len(plan.deadlines)
 
 
+def test_return_before_departure_is_flagged():
+    plan = planner.build_plan(trip(departure=date(2026, 10, 1), return_date=date(2026, 9, 20)),
+                              date(2026, 7, 23), RULES, CLAIMS)
+    assert any("CHECK YOUR DATES" in n for n in plan.notes)
+
+
+def test_ics_lines_are_folded_to_rfc_limit():
+    """RFC 5545 §3.1: content lines must not exceed 75 octets. Strict clients
+    (some Outlook/CalDAV paths) mangle or reject unfolded output."""
+    plan = planner.build_plan(trip(), date(2026, 7, 19), RULES, CLAIMS)
+    ics = planner.to_ics(plan, trip()).decode()
+    over = [l for l in ics.split("\r\n") if len(l.encode("utf-8")) > 75]
+    assert not over, f"{len(over)} unfolded lines, e.g. {over[0][:60]!r}"
+    # Continuation lines must start with a single space, and unfolding must
+    # restore the original content.
+    unfolded = ics.replace("\r\n ", "")
+    assert "SUMMARY:[MIU travel] OCONUS commercial air T3 request received by final approver" in unfolded
+
+
+def test_ics_folding_preserves_multibyte_characters():
+    long_label = "x" * 70 + "é" * 10          # fold point lands mid-sequence
+    folded = planner._fold(f"SUMMARY:{long_label}")
+    assert all(len(l.encode("utf-8")) <= 75 for l in folded.split("\r\n"))
+    assert folded.replace("\r\n ", "") == f"SUMMARY:{long_label}"
+
+
 def test_every_rule_claim_resolves():
     for rule in RULES["rules"]:
         assert rule["claim_id"] in CLAIMS, f"{rule['id']} cites unknown {rule['claim_id']}"

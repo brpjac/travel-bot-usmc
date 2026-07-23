@@ -146,7 +146,10 @@ def render_trip_planner(claims_index: dict):
                 mime="text/calendar",
             )
         for note in plan.notes:
-            st.caption(note)
+            if note.startswith("CHECK YOUR DATES"):
+                st.warning(note)
+            else:
+                st.caption(note)
         st.caption("Deadlines from ForO 3000-52.1 and MIU guidance — verify with your S-1.")
 
 
