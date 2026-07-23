@@ -50,6 +50,29 @@ def load_vectorstore():
     )
 
 
+def friendly_error(e: Exception) -> str:
+    """Turn a raw Google API exception into something a Marine can act on.
+
+    The SDK's quota errors are ~900 characters of JSON (quota IDs, billing
+    links, retryDelay). Dumping that into the chat in front of an audience is
+    worse than useless — the raw text stays available in an expander.
+    """
+    s = str(e)
+    if "RESOURCE_EXHAUSTED" in s or "429" in s:
+        return ("The bot has used up its free daily allowance of questions. "
+                "It resets around midnight Pacific. The Trip Planner above "
+                "still works — it makes no model calls.")
+    if "503" in s or "UNAVAILABLE" in s:
+        return ("Google's model is briefly overloaded. Wait a few seconds and "
+                "ask again — this usually clears on its own.")
+    if "NOT_FOUND" in s or "404" in s:
+        return ("The configured model is unavailable on this API key. An admin "
+                "can change MIU_ANSWER_MODEL in the app settings.")
+    if "API key" in s or "PERMISSION_DENIED" in s or "401" in s:
+        return "The API key is missing or rejected. An admin needs to check the app's secrets."
+    return "The model call failed. Try again; if it keeps happening, tell whoever maintains this app."
+
+
 def md_safe(text: str) -> str:
     """Escape $ so Streamlit's markdown doesn't LaTeX-mangle dollar amounts."""
     return text.replace("$", r"\$")
@@ -105,9 +128,31 @@ def render_trip_planner(claims_index: dict):
     with st.expander("🗓️ Trip Planner — turn your departure date into calendar deadlines"):
         c1, c2, c3 = st.columns(3)
         with c1:
-            departure = st.date_input("Departure date", value=date.today() + timedelta(days=60))
-            has_return = st.checkbox("I have a return date", value=True)
-            return_date = st.date_input("Return date", value=departure + timedelta(days=4)) if has_return else None
+            # Explicit keys: without them Streamlit derives widget identity from
+            # the default value, so changing the departure date silently reset a
+            # user-entered return date back to departure+4.
+            departure = st.date_input("Departure date", key="tp_departure",
+                                      value=date.today() + timedelta(days=60))
+            has_return = st.checkbox("I have a return date", value=True, key="tp_has_return")
+            # date_input returns None when the field is cleared — guard before
+            # any date arithmetic, or the whole app dies on a traceback.
+            if departure is None:
+                st.info("Enter a departure date to see your deadlines.")
+                return
+            # A keyed widget keeps its session value, which Streamlit rejects if
+            # it falls below min_value — so pull a stale return date forward
+            # before rendering rather than letting it raise.
+            if has_return:
+                stored = st.session_state.get("tp_return")
+                if stored is not None and stored < departure:
+                    st.session_state["tp_return"] = departure + timedelta(days=4)
+                return_date = st.date_input(
+                    "Return date", key="tp_return",
+                    value=departure + timedelta(days=4),
+                    min_value=departure,
+                )
+            else:
+                return_date = None
         with c2:
             scope = st.radio("Where", ["CONUS", "OCONUS"], horizontal=True)
             party = st.radio("Party", ["Individual", "Group (2-99)", "Charter (100+)"])
@@ -378,7 +423,9 @@ def main():
                         chat_history, question,
                     )
                 except Exception as e:
-                    st.error(f"Model call failed: {e}")
+                    st.error(friendly_error(e))
+                    with st.expander("Technical detail"):
+                        st.code(str(e)[:1500])
                     st.session_state.messages.pop()
                     st.stop()
 
